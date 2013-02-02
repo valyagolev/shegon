@@ -19,7 +19,7 @@ body {
 
 #repl .CodeMirror {
     border: 0;
-    height: 27px;
+    height: auto;
     line-height: 19px;
 }
 
@@ -28,10 +28,8 @@ body {
     background-color: white;
 }
 #repl .CodeMirror.promt {
-    /*vertical-align: top;*/
     float: left;
-    /*display: inline-block;*/
-
+    margin-right: -21px;
 }
 .CodeMirror.promt {
     background-color: rgb(240, 240, 240);

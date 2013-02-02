@@ -43,7 +43,9 @@
 
 (defpage [:get "/repl"] []
   (layout
-      [:textarea {:class "repl"}]))
+      ; [:textarea {:class "repl"}]
+
+      ))
 
 
 (defpartial compiler-page [params result]

@@ -13,12 +13,19 @@
 
 (defn $repl-el [] ($ "#repl"))
 
+(defn last-pos [cm]
+  (let [last-line (- (.lineCount cm) 1)]
+    (u/js-map :line last-line
+              :ch (.-length (.getLine cm last-line)))))
+
 (defn create-input []
   (reset! input
     (js/CodeMirror.
       (first ($repl-el))
       (u/js-map :value "(+ 1 2)"
                 :extraKeys input-keymap)))
+  (.focus @input)
+  (.setCursor @input (last-pos @input))
   (reset! $input ($ (.getWrapperElement @input)))
   (.addClass @$input "input"))
 
@@ -31,17 +38,17 @@
 (defn current-promt []
   (.last ($ ".CodeMirror.promt")))
 
-(defn add-output [output]
+(defn add-output [promt input output]
   (.on
     (js/CodeMirror.
       #(.addClass (.insertBefore ($ %) (shegon.repl/current-promt)) "output")
-        (u/js-map :value output
+        (u/js-map :value (str promt "  " input "\n" output)
                   :readOnly true))
     "focus" focus-only-input))
 
 (defn do-repl []
   (let [inp (.getValue @input)]
-    (compile-js inp #(add-output (js/JSON.stringify (do-eval %))))
+    (compile-js inp #(add-output "shegon.user=>" inp (do-eval %)))
     (.setValue @input "")))
 
 (defn do-eval [code]
