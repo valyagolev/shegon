@@ -14,22 +14,31 @@
 (defn clojure-to-js-emit [s]
   (comp/with-core-cljs
     (binding [ana/*cljs-ns* 'cljs.user
-            ana/*cljs-file* "<fazil REPL>"]
+              ana/*cljs-file* "<fazil REPL>"]
       (let [r (java.io.StringReader. s)
             ; env (setup/load-core-names)
-            env (ana/empty-env)
+            ; env (assoc-in (ana/empty-env) [:locals '*ns*] ana/*cljs-ns*)
+            env (assoc (ana/empty-env) :ns (ana/get-namespace ana/*cljs-ns*))
             pbr (clojure.lang.LineNumberingPushbackReader. r)
             eof (Object.)]
+
+        (binding [ana/*cljs-ns* 'cljs.core]
+          (comp/emit
+            (ana/analyze (assoc (ana/empty-env) :ns (ana/get-namespace ana/*cljs-ns*))
+            `(~'def ~'*ns* '~ana/*cljs-ns*))))
+
         (loop [r (read pbr false eof false)]
-          (let [env (assoc env :ns (ana/get-namespace ana/*cljs-ns*))]
-            (when-not (identical? eof r)
-              ; (catching-requires-emit (ana/analyze env r))
+          (if (identical? eof r)
+            {:ns ana/*cljs-ns*}
+            (do
               (comp/emit (ana/analyze env r))
               (recur (read pbr false eof false)))))))))
 
 (defn clojure-to-js [s]
-  (with-out-str (clojure-to-js-emit s)))
+  (let [retn (atom nil)
+        result (with-out-str (reset! retn (clojure-to-js-emit s)))]
+    (assoc @retn :result result)))
 
 (defn compile-js [{:keys [source]}]
-    (try {:result (clojure-to-js source)}
+    (try (clojure-to-js source)
         (catch Exception e {:exception e})))

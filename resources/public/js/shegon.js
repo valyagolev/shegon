@@ -45,7 +45,7 @@ $(function() {
         doc.focus();
 
         var currentStart = null;
-        var prompt = 'cljs.user>';
+        var prompt = 'cljs.user=>';
         var currentNotHistoricValue = '';
 
         var history = (function() {
@@ -144,12 +144,15 @@ $(function() {
 
                 try {
                     // this all because result may be too lazy
-                    str_result = '' + result;
+                    str_result = '' + result.evalResult;
                 } catch (e) {
                     str_result = e.stack;
                 }
 
                 doc.replaceRange('\n' + str_result + '\n\n', last, last);
+
+                if (result.ns)
+                    prompt = result.ns + '=>';
 
                 rePrompt();
             });
@@ -168,7 +171,10 @@ $(function() {
                 .ajax('/compiler', {'type': 'post',
                                     'data': {'source': value},
                                     'dataType': 'jsonp'})
-                .done(function(data) { callback(catchingEval(data.result)); })
+                .done(function(data) {
+                    data.evalResult = catchingEval(data.result);
+                    callback(data);
+                })
                 .fail(function() { alert(2); });
         }
 

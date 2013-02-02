@@ -51,7 +51,8 @@
 
 (defpage [:post "/compiler"] {:keys [callback] :as params}
   (let [result (shegon.compiler/compile-js params)]
-    (if callback (resp/jsonp callback result)
+    (if callback
+      (resp/jsonp callback result)
       (compiler-page params result))))
 
 (defpage [:get "/compiler"] []
