@@ -1,6 +1,5 @@
 (ns shegon.views
-  (:require [noir.content.getting-started]
-            [clj-stacktrace.repl]
+  (:require [clj-stacktrace.repl]
             [shegon.compiler])
   (:use [noir.core :only [defpage defpartial]]
         [hiccup.page :only [include-css include-js html5]]))
@@ -46,14 +45,19 @@
         [:script "var textarea = document.getElementById('" source# "');
                   CodeMirror.fromTextArea(textarea, {'readOnly': true});"]]))
 
-
-(defpage [:get "/compiler"] []
-         (layout
-           (compiler-form {})))
-
-
+(defpartial compiler-page [params]
+  (layout
+    (compiler-form params)
+    (output (shegon.compiler/compile-js params))))
 
 (defpage [:post "/compiler"] {:as params}
-         (layout
-            (compiler-form params)
-            (output (shegon.compiler/compile-js params))))
+  (compiler-page params))
+
+(defpage [:get "/compiler"] []
+  (compiler-page {:source "(defn plus [a b] (+ a b))\n\n(js/alert (plus 19 19))"}))
+
+
+(defpage [:get "/"] []
+  (layout
+    [:ul
+      [:li [:a {:href "/compiler"} "Compiler"]]]))
