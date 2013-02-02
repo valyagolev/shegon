@@ -1,5 +1,6 @@
 (ns shegon.views
   (:require [clj-stacktrace.repl]
+            [noir.response :as resp]
             [shegon.compiler])
   (:use [noir.core :only [defpage defpartial]]
         [hiccup.page :only [include-css include-js html5]]))
@@ -39,17 +40,18 @@
 
 (defpage [:get "/repl"] []
   (layout
-    (let [repl# (gensym "repl")]
-      [:textarea {:id repl# :class "repl"}])))
+      [:textarea {:class "repl"}]))
 
 
-(defpartial compiler-page [params]
+(defpartial compiler-page [params result]
   (layout
     (compiler-form params)
-    (output (shegon.compiler/compile-js params))))
+    (output result)))
 
-(defpage [:post "/compiler"] {:as params}
-  (compiler-page params))
+(defpage [:post "/compiler"] {:keys [callback] :as params}
+  (let [result (shegon.compiler/compile-js params)]
+    (if callback (resp/jsonp callback result)
+      (compiler-page params result))))
 
 (defpage [:get "/compiler"] []
   (compiler-page {:source "(defn plus [a b] (+ a b))\n\n(js/alert (plus 19 19))"}))
