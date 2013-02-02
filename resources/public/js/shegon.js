@@ -140,7 +140,17 @@ $(function() {
 
             doEval(currentValue, function(result) {
                 var last = lastPos(doc);
-                doc.replaceRange('\n' + result + '\n\n', last, last);
+                var str_result;
+
+                try {
+                    // this all because result may be too lazy
+                    str_result = '' + result;
+                } catch (e) {
+                    str_result = e.stack;
+                }
+
+                doc.replaceRange('\n' + str_result + '\n\n', last, last);
+
                 rePrompt();
             });
         }
