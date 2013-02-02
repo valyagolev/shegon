@@ -68,7 +68,7 @@ $(function() {
             notReadOnlyEnd = Pos(where.line, where.ch + 1);
             doc.replaceRange(' ', where, where);
 
-            doc.markText(where, notReadOnlyEnd, {'readOnly': false});
+            // doc.markText(where, notReadOnlyEnd, {'readOnly': false});
 
             return notReadOnlyEnd;
         }
@@ -79,7 +79,7 @@ $(function() {
             var newSpace = addNotReadOnlySpace(where);
 
             doc.markText({'line': 0, 'ch': 0}, currentStart,
-                         {'readOnly': true});
+                         {'atomic': true});
 
             doc.setCursor(newSpace);
         }
