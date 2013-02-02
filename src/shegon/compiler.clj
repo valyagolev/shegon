@@ -13,7 +13,7 @@
 
 (defn clojure-to-js-emit [s]
   (comp/with-core-cljs
-    (binding [ana/*cljs-ns* 'cljs.user
+    (binding [ana/*cljs-ns* 'shegon.user
               ana/*cljs-file* "<fazil REPL>"]
       (let [r (java.io.StringReader. s)
             ; env (setup/load-core-names)

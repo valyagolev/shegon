@@ -1,5 +1,7 @@
 (ns shegon.user)
 
+(let [old (.-provide js/goog)]
+  (set! js/goog.provide (fn [m] (try (old m) (catch js/Error e nil)))))
 
 (defn log [& a]
   (js/window.shegon.logToConsole (apply str a)))
@@ -20,29 +22,32 @@
         :else           obj))
 
 
+(defn js-map [& clauses]
+  (to-js (apply hash-map clauses)))
+
 (defn load-module [module]
+  ; returns a code to execute to kill
   (let [url (.-url module)
         provides (.-provides module)]
-    (log "Loading " url " : " provides)
+    (log "Loading " provides)
     ; (js/console.log (to-js provides))
 
     (.ajax $ url (to-js {:dataType "script"}))
 
-    (doseq [m provides :when (not= m "cljs.core")]
-      (js/console.log m)
-      (js/eval (str "delete " m ";")))))
+    ; (str
+    ;   (for [m provides :when (and (not= m "cljs.core")
+    ;                               (not (nil? (try (js/eval m)
+    ;                                               (catch js/Error e nil)))))]
+    ;   (js/console.log m)
+    ;   (str "delete " m ";")))
+
+    ))
 
 (defn require [& modules]
-  (log "Loading...")
+  (log "Loading asynchronously...")
   (.done
     (.ajax $ "/requires"
       (to-js {:data {:modules modules} :type "post" :dataType "jsonp"}))
     (fn [data] (doall (map load-module data)))))
-
-
-; (defn repl-async-op [f]
-;   (fn [& args] (apply f (js/shegon.startAsync))))
-
-; (def require (repl-async-op require*))
 
 

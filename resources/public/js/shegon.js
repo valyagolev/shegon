@@ -46,7 +46,7 @@ $(function() {
         doc.focus();
 
         var currentStart = null;
-        var prompt = 'cljs.user=>';
+        var prompt = 'shegon.user=>';
         var currentNotHistoricValue = '';
 
         var history = (function() {
@@ -171,11 +171,11 @@ $(function() {
         }
 
         var catchingEval = function(value) {
-            try {
+            // try {
                 return eval(value);
-            } catch (e) {
-                return e.stack;
-            }
+            // } catch (e) {
+                // return e.stack;
+            // }
         }
 
 

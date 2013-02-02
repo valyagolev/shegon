@@ -23,7 +23,8 @@
                            "/js/shegon.js")]
               [:body
                [:div#wrapper
-                content]]))
+                content]]
+               [:div#repl]))
 
 
 (defpartial compiler-form [{:keys [source]}]

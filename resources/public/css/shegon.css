@@ -4,9 +4,31 @@ body {
 
 .CodeMirror {
     border: 1px solid black;
+    height: 200px;
 }
 
 .CodeMirror-matchingbracket {
     color: black !important;
     font-weight: bolder;
 }
+
+#repl {
+    border: 1px solid black;
+}
+
+
+#repl .CodeMirror {
+    border: 0;
+    height: 19px;
+}
+
+#repl .CodeMirror.input {
+    display: inline-block;
+    margin-left: -2.4em;
+}
+#repl .CodeMirror.promt {
+    /*vertical-align: top;*/
+    display: inline-block;
+}
+
+
