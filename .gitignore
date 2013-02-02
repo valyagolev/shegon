@@ -1,4 +1,5 @@
 pom.xml
+/out/
 *jar
 /lib/
 /classes/
