@@ -15,7 +15,9 @@
                (include-js "/codemirror/codemirror.js"
                            "/codemirror/clojure.js"
                            "/codemirror/javascript.js"
-                           "/codemirror/matchbrackets.js")]
+                           "/codemirror/matchbrackets.js"
+                           "/js/jquery-1.9.0.min.js"
+                           "/js/shegon.js")]
               [:body
                [:div#wrapper
                 content]]))
@@ -24,19 +26,9 @@
 (defpartial compiler-form [{:keys [source]}]
     (let [source# (gensym "source")
           form# (gensym "form")]
-      [:div
-       [:form {:id form# :action "/compiler" :method :post}
+       [:form {:class "compiler-form" :action "/compiler" :method :post}
         [:textarea {:id source# :name :source} source]
-        [:input {:type :submit :value "Compile (or ⌘-Enter)"}]]
-       [:script "var form = document.getElementById('" form# '"');
-                 var textarea = document.getElementById('" source# "');
-
-                 var config = {'matchBrackets': true,
-                               'extraKeys':
-                                {'Cmd-Enter':
-                                    function(){ form.submit(); }}};
-
-                 CodeMirror.fromTextArea(textarea, config);"]]))
+        [:input {:type :submit :value "Compile (or ⌘-Enter)"}]]))
 
 (defpartial output [{:keys [exception result]}]
     (let [source# (gensym "source")]
@@ -44,6 +36,12 @@
         [:textarea {:id source#} (or result (clj-stacktrace.repl/pst-str exception))]
         [:script "var textarea = document.getElementById('" source# "');
                   CodeMirror.fromTextArea(textarea, {'readOnly': true});"]]))
+
+(defpage [:get "/repl"] []
+  (layout
+    (let [repl# (gensym "repl")]
+      [:textarea {:id repl# :class "repl"}])))
+
 
 (defpartial compiler-page [params]
   (layout
