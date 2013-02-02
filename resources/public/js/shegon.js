@@ -46,10 +46,49 @@ $(function() {
 
         var currentStart = null;
         var prompt = 'cljs.user>';
-        var history = [];
-        var historyPos = 0;
-        var lastHistoryChange = null;
         var currentNotHistoricValue = '';
+
+        var history = (function() {
+
+            if (!window.localStorage.evalHistory)
+                window.localStorage.evalHistory = "[]";
+
+            var actual = JSON.parse(window.localStorage.evalHistory);
+            var pos = 0;
+
+            var commit = function() {
+                window.localStorage.evalHistory = JSON.stringify(actual);
+            }
+
+            return {
+                'addLine': function(line) {
+                    actual.push(line);
+                    commit();
+                    pos = 0;
+                },
+                'empty': function() {
+                    return actual.length == 0;
+                },
+                'move': function(delta) {
+                    pos += delta;
+
+                    if (pos <= 0) {
+                        pos = 0;
+                    } else if (pos > actual.length) {
+                        pos = actual.length;
+                    }
+                },
+                'current': function() {
+                    return pos == 0 ?
+                            currentNotHistoricValue :
+                                actual[actual.length - pos];
+                }
+            };
+
+        }());
+
+        var lastHistoryChange = null;
+
 
         var getCurrentValue = function() {
             if (!currentStart) return '';
@@ -97,8 +136,7 @@ $(function() {
         var readEvalPrint = function() {
             var currentValue = getCurrentValue();
 
-            history.push(currentValue);
-            historyPos = 0;
+            history.addLine(currentValue);
 
             doEval(currentValue, function(result) {
                 var last = lastPos(doc);
@@ -125,18 +163,11 @@ $(function() {
         }
 
         var showHistory = function(delta) {
-            if (!history.length) return;
+            if (history.empty()) return;
 
-            historyPos += delta;
+            history.move(delta);
 
-            if (historyPos <= 0) {
-                historyPos = 0;
-            } else if (historyPos > history.length) {
-                historyPos = history.length;
-            }
-
-            var historicValue = historyPos == 0 ? currentNotHistoricValue :
-                                    history[history.length - historyPos];
+            var historicValue = history.current();
 
             lastHistoryChange = historicValue;
             doc.replaceRange(historicValue, currentStart, lastPos(doc));
