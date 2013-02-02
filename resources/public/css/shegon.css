@@ -1,0 +1,12 @@
+body {
+    padding: 10px;
+}
+
+.CodeMirror {
+    border: 1px solid black;
+}
+
+.CodeMirror-matchingbracket {
+    color: black !important;
+    font-weight: bolder;
+}
