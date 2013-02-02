@@ -1,7 +1,8 @@
 (ns shegon.views
   (:require [clj-stacktrace.repl]
             [noir.response :as resp]
-            [shegon.compiler])
+            [shegon.compiler]
+            [shegon.namespaces])
   (:use [noir.core :only [defpage defpartial]]
         [hiccup.page :only [include-css include-js html5]]))
 
@@ -49,11 +50,6 @@
     (compiler-form params)
     (output result)))
 
-(defpage [:post "/compiler"] {:keys [callback] :as params}
-  (let [result (shegon.compiler/compile-js params)]
-    (if callback
-      (resp/jsonp callback result)
-      (compiler-page params result))))
 
 (defpage [:get "/compiler"] []
   (compiler-page {:source "(defn plus [a b] (+ a b))\n\n(js/alert (plus 19 19))"}))
@@ -63,3 +59,18 @@
   (layout
     [:ul
       [:li [:a {:href "/compiler"} "Compiler"]]]))
+
+
+
+(defpage [:post "/compiler"] {:keys [callback] :as params}
+  (let [result (shegon.compiler/compile-js params)]
+    (if callback
+      (resp/jsonp callback result)
+      (compiler-page params result))))
+
+
+
+(defpage [:post "/requires"] {:keys [callback modules]}
+  (resp/jsonp callback (shegon.namespaces/load-modules modules)))
+
+

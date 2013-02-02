@@ -1,4 +1,5 @@
 $(function() {
+    window.shegon = window.shegon || {};
 
     var Pos = function(line, ch) {
         return {'line': line, 'ch': ch};
@@ -132,6 +133,21 @@ $(function() {
         rePrompt();
 
 
+        var logToConsole = function(smth) {
+            var last = lastPos(doc);
+
+            doc.replaceRange('\n' + smth + '\n\n', last);
+
+            rePrompt();
+        }
+
+        window.shegon.logToConsole = function(smth) {
+            var currentValue = getCurrentValue().trim();
+
+            logToConsole(smth);
+
+            doc.replaceRange(currentValue, lastPos(doc));
+        }
 
         var readEvalPrint = function() {
             var currentValue = getCurrentValue();
@@ -139,9 +155,7 @@ $(function() {
             history.addLine(currentValue);
 
             doEval(currentValue, function(result) {
-                var last = lastPos(doc);
                 var str_result;
-
                 try {
                     // this all because result may be too lazy
                     str_result = '' + result.evalResult;
@@ -149,12 +163,10 @@ $(function() {
                     str_result = e.stack;
                 }
 
-                doc.replaceRange('\n' + str_result + '\n\n', last, last);
-
                 if (result.ns)
                     prompt = result.ns + '=>';
 
-                rePrompt();
+                logToConsole(str_result);
             });
         }
 
@@ -165,6 +177,7 @@ $(function() {
                 return e.stack;
             }
         }
+
 
         var doEval = function(value, callback) {
             return $

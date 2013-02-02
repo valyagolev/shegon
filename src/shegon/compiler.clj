@@ -18,14 +18,15 @@
       (let [r (java.io.StringReader. s)
             ; env (setup/load-core-names)
             ; env (assoc-in (ana/empty-env) [:locals '*ns*] ana/*cljs-ns*)
-            env (assoc (ana/empty-env) :ns (ana/get-namespace ana/*cljs-ns*))
+            env (assoc (ana/empty-env) :ns (ana/get-namespace ana/*cljs-ns*) :context :expr)
             pbr (clojure.lang.LineNumberingPushbackReader. r)
             eof (Object.)]
 
-        (binding [ana/*cljs-ns* 'cljs.core]
-          (comp/emit
-            (ana/analyze (assoc (ana/empty-env) :ns (ana/get-namespace ana/*cljs-ns*))
-            `(~'def ~'*ns* '~ana/*cljs-ns*))))
+        ;; setting *ns* to ns because we can? should we?
+        ; (binding [ana/*cljs-ns* 'cljs.core]
+        ;   (comp/emit
+        ;     (ana/analyze (assoc (ana/empty-env) :ns (ana/get-namespace ana/*cljs-ns*))
+        ;     `(~'def ~'*ns* '~ana/*cljs-ns*))))
 
         (loop [r (read pbr false eof false)]
           (if (identical? eof r)
@@ -38,6 +39,10 @@
   (let [retn (atom nil)
         result (with-out-str (reset! retn (clojure-to-js-emit s)))]
     (assoc @retn :result result)))
+
+; (defn dependencies [js-str]
+;   (closure/cljs-dependencies {:output-dir "resources/public"} ["jayq.core"]))
+
 
 (defn compile-js [{:keys [source]}]
     (try (clojure-to-js source)
