@@ -20,8 +20,7 @@
       (u/js-map :value "(+ 1 2)"
                 :extraKeys input-keymap)))
   (reset! $input ($ (.getWrapperElement @input)))
-  (.addClass @$input "input")
-  )
+  (.addClass @$input "input"))
 
 (defn add-promt []
   (js/CodeMirror.
@@ -33,11 +32,12 @@
   (.last ($ ".CodeMirror.promt")))
 
 (defn add-output [output]
-  (js/CodeMirror.
-    #(.addClass (.insertBefore ($ %) (shegon.repl/current-promt)) "output")
-      (u/js-map :value output
-                :readOnly true)))
-
+  (.on
+    (js/CodeMirror.
+      #(.addClass (.insertBefore ($ %) (shegon.repl/current-promt)) "output")
+        (u/js-map :value output
+                  :readOnly true))
+    "focus" focus-only-input))
 
 (defn do-repl []
   (let [inp (.getValue @input)]
@@ -53,6 +53,11 @@
                               :dataType :jsonp})]
     (.done pr (fn [data] (callback (.-result data))))
     (.fail pr (fn [error] (js/console.log error)))))
+
+(defn focus-only-input [cm]
+  (let [sel (.getSelection cm)]
+    (when (= sel "")
+      (js/setTimeout #(.focus @input) 100))))
 
 ($ (fn []
 
