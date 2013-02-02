@@ -12,6 +12,7 @@
   (u/js-map :Enter #(do-repl)))
 
 (defn $repl-el [] ($ "#repl"))
+(defn scroll-down [] (.scrollTop ($repl-el) (.-scrollHeight (first ($repl-el)))))
 
 (defn last-pos [cm]
   (let [last-line (- (.lineCount cm) 1)]
@@ -27,7 +28,8 @@
   (.focus @input)
   (.setCursor @input (last-pos @input))
   (reset! $input ($ (.getWrapperElement @input)))
-  (.addClass @$input "input"))
+  (.addClass @$input "input")
+  (.on @input "change" scroll-down))
 
 (defn add-promt []
   (js/CodeMirror.
@@ -38,17 +40,19 @@
 (defn current-promt []
   (.last ($ ".CodeMirror.promt")))
 
-(defn add-output [promt input output]
+(defn add-output [output]
   (.on
     (js/CodeMirror.
       #(.addClass (.insertBefore ($ %) (shegon.repl/current-promt)) "output")
-        (u/js-map :value (str promt "  " input "\n" output)
+        (u/js-map :value (str output)
                   :readOnly true))
-    "focus" focus-only-input))
+    "focus" focus-only-input)
+  (scroll-down))
 
 (defn do-repl []
   (let [inp (.getValue @input)]
-    (compile-js inp #(add-output "shegon.user=>" inp (do-eval %)))
+    (add-output (str "shegon.user=>  " inp))
+    (compile-js inp #(add-output (do-eval %)))
     (.setValue @input "")))
 
 (defn do-eval [code]

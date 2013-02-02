@@ -4,7 +4,8 @@
   (set! js/goog.provide (fn [m] (try (old m) (catch js/Error e nil)))))
 
 (defn log [& a]
-  (js/window.shegon.logToConsole (apply str a)))
+  (shegon.repl/add-output (apply str a))
+  (js/console.log (first a)))
 
 (def $ js/$)
 
