@@ -1,8 +1,6 @@
 (ns shegon.user
   (:use [jayq.core :only [ajax]]))
 
-; (js/console.log "loading shegon.user")
-
 (defn log [& a]
   (shegon.repl/add-output (apply str a))
   (map #(js/console.log (clj->js %)) a))
@@ -13,24 +11,21 @@
 (defn load-module [module]
   (let [url (.-url module)
         provides (.-provides module)]
+
     (log "Loading " provides)
 
-    (ajax url {:dataType "script"})
-
-    ;; I've considered deleting modules before loading
-    ; (str
-    ;   (for [m provides :when (and (not= m "cljs.core")
-    ;                               (not (nil? (try (js/eval m)
-    ;                                               (catch js/Error e nil)))))]
-    ;   (js/console.log m)
-    ;   (str "delete " m ";")))
-
-    ))
+    (ajax url {:dataType "script"})))
 
 ;; goog.provide doesn't allow us to reload modules :-(
 ;; can't be sure even cljs.core is loaded there :/
 ;; so have to write js
-(js* "(function(){
+(def patch-provide (js* "function(){
+        if (window._provide_patched)
+          return;
+
+        window._provide_patched = true;
+
+        console.log('patching goog.provide');
         var old_provide = goog.provide;
         goog.provide = function(m) {
           try {
@@ -43,11 +38,13 @@
             debugger;
           }
         };
-      }());")
+
+      };
+      "))
 
 (defn require [& modules]
   (log "Loading asynchronously...")
-
+  (patch-provide)
   (.done
     (ajax "/requires" {:data {:modules modules}
                        :type "post"
