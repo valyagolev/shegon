@@ -38,13 +38,17 @@
             console.log('Error loading ', m, e);
             debugger;
           }
+
+//          setTimeout(function() {
+//            shegon.user.log('Loaded ' + m);
+//          }, 500); // should be enough to get shegon.user loaded
         };
 
       };
       "))
 
 (defn require [& modules]
-  (log "Loading asynchronously...")
+  (log "Loading asynchronously...") ; Open the console if it never says loaded.")
   (patch-provide)
   (.done
     (ajax "/requires" {:data {:modules modules}
@@ -63,7 +67,7 @@
 
 
 (defn emit-js [code]
-  (compile-cljs code #(log (or (:error %) (:result %)))))
+  (compile-str code #(log (or (:error %) (:result %)))))
 
 (defn eval-js [code]
   (try
@@ -88,7 +92,7 @@ Try also stuff from shegon.user namespace:
   (log \"hello\")                 ; to write stuff down in the console
 
   (emit-js \"(+ 1 1)\")           ; note that as this op and the next are
-  (compile \"(+ 1 1)\" log)       ; async operations. in the second
+  (compile-str \"(+ 1 1)\" log)   ; async operations. in the second
                                   ; case you can supply a callback
 
   (require 'your.module)          ; compiles and (re-)loads your module
