@@ -1,5 +1,6 @@
 (ns shegon.repl
-  (:require [shegon.user :as u])
+  (:require [shegon.user :as u]
+            [shegon.history :as h])
   (:use [jayq.core :only [$ ajax]]))
 
 
@@ -17,7 +18,9 @@
 (def input-keymap
   (u/js-map :Enter #(do-repl)
             :Ctrl-Enter "newlineAndIndent"
-            :Alt-Enter "newlineAndIndent"))
+            :Alt-Enter "newlineAndIndent"
+            :Up #(history-move :up)
+            :Down #(history-move :down)))
 
 (defn $repl-el [] ($ "#repl"))
 (defn scroll-down [] (.scrollTop ($repl-el) (.-scrollHeight (first ($repl-el)))))
@@ -33,7 +36,8 @@
       (first ($repl-el))
       (u/js-map :value ""
                 :extraKeys input-keymap
-                :mode "clojure")))
+                :mode "clojure"
+                :matchBrackets true)))
   (.focus @input)
   (.setCursor @input (last-pos @input))
   (reset! $input ($ (.getWrapperElement @input)))
@@ -65,6 +69,7 @@
 
 (defn do-repl []
   (let [inp (.getValue @input)]
+    (h/add-input inp)
     (add-output (format-input "shegon.user=>  " inp))
     (eval-print inp)
     (.setValue @input "")))
@@ -73,6 +78,10 @@
   (let [sel (.getSelection cm)]
     (when (= sel "")
       (js/setTimeout #(.focus @input) 100))))
+
+(defn history-move [direction]
+  (.setValue @input (h/move (.getValue @input) direction))
+  (.setCursor @input (last-pos @input)))
 
 ($ (fn []
     (.html ($repl-el) "")
