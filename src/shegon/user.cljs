@@ -109,8 +109,8 @@ Try also stuff from shegon.user namespace:
                                   ; from .cljs file on your classpath
                                   ; (note that classpath is not a
                                   ;   :cljsbuild :builds :source-paths
-                                  ; thing but rather like clojure classpath
-                                  ; by default it's src/)
+                                  ; thing but rather like clojure classpath.
+                                  ; By default it's src/)
                                   ; very nice!
 
 This thingy is open-source: https://github.com/va1en0k/shegon"))
