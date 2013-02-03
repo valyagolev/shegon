@@ -31,8 +31,8 @@
 
             old_provide(m);
           } catch (e) {
-            console.log('Error loading ', m, e);
-            debugger;
+//            console.log('Error loading ', m, e);
+//            debugger;
           }
 
 //          setTimeout(function() {
