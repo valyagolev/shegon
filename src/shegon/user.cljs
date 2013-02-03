@@ -1,12 +1,10 @@
-(ns shegon.user)
+(ns shegon.user
+  (:use [jayq.core :only [ajax]]))
 
 
 (defn log [& a]
   (shegon.repl/add-output (apply str a))
   (map #(js/console.log (clj->js %)) a))
-
-
-(def $ js/$)
 
 (defn js-map [& clauses]
   (clj->js (apply hash-map clauses)))
@@ -39,9 +37,11 @@
 
 (defn require [& modules]
   (log "Loading asynchronously...")
+
   (.done
-    (.ajax $ "/requires"
-      (js-map :data {:modules modules} :type "post" :dataType "jsonp"))
+    (ajax "/requires" {:data {:modules modules}
+                       :type "post"
+                       :dataType "jsonp"})
     (fn [data] (doall (map load-module data)))))
 
 
