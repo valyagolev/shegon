@@ -3,6 +3,25 @@
   (:use [jayq.core :only [$ ajax]]))
 
 
+(defn compile-cljs [code callback]
+  (let [pr (ajax "/compiler" {:type :post
+                              :data {:source code}
+                              :dataType :jsonp})]
+    (.done pr (fn [data] (callback {:result (.-result data)
+                                    :error (.-exception data)})))
+    (.fail pr (fn [error] (callback {:error error})))))
+
+(defn js-eval [code]
+  (js/eval code))
+
+(defn cljs-eval [code]
+  (compile-cljs code #(add-output
+                        (or (:error %)
+                            (js-eval (:result %))))))
+
+
+
+
 (def input (atom nil))
 (def $input (atom nil))
 
@@ -52,18 +71,13 @@
 (defn do-repl []
   (let [inp (.getValue @input)]
     (add-output (str "shegon.user=>  " inp))
-    (compile-js inp #(add-output (do-eval %)))
+    (cljs-eval inp)
     (.setValue @input "")))
 
-(defn do-eval [code]
-  (js/eval code))
 
-(defn compile-js [code callback]
-  (let [pr (ajax "/compiler" {:type :post
-                              :data {:source code}
-                              :dataType :jsonp})]
-    (.done pr (fn [data] (callback (.-result data))))
-    (.fail pr (fn [error] (js/console.log error)))))
+
+
+
 
 (defn focus-only-input [cm]
   (let [sel (.getSelection cm)]

@@ -64,11 +64,17 @@
       [:li [:a {:href "/compiler"} "Compiler"]]]))
 
 
+(defn map-key [m k f]
+  (if-let [v (k m)]
+    (assoc m k (f v))
+    m))
+
 
 (defpage [:post "/compiler"] {:keys [callback] :as params}
   (let [result (shegon.compiler/compile-js params)]
     (if callback
-      (resp/jsonp callback result)
+      (resp/jsonp callback
+        (map-key result :exception clj-stacktrace.repl/pst-str))
       (compiler-page params result))))
 
 
