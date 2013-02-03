@@ -49,7 +49,6 @@
 
 (defn require [& modules]
   (log "Loading asynchronously...") ; Open the console if it never says loaded.")
-  (patch-provide)
   (.done
     (ajax "/requires" {:data {:modules modules}
                        :type "post"
@@ -99,3 +98,5 @@ Try also stuff from shegon.user namespace:
 
 This thingy is open-source: https://github.com/va1en0k/shegon"))
 
+
+(patch-provide)
