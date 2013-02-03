@@ -12,15 +12,17 @@
     (.fail pr (fn [error] (callback {:error error})))))
 
 (defn js-eval [code]
-  (js/eval code))
+  (try
+    {:result (js/eval code)}
+    (catch js/Error e {:error (.-stack e)})))
 
 (defn cljs-eval [code]
-  (compile-cljs code #(add-output
-                        (or (:error %)
-                            (js-eval (:result %))))))
-
-
-
+  (compile-cljs code
+    #(do (add-output (:error %))
+         (when-let [code (:result %)]
+            (let [eres (js-eval code)]
+              (add-output (:error eres))
+              (add-output (:result eres)))))))
 
 (def input (atom nil))
 (def $input (atom nil))
@@ -60,13 +62,16 @@
   (.last ($ ".CodeMirror.promt")))
 
 (defn add-output [output]
-  (.on
-    (js/CodeMirror.
-      #(.addClass (.insertBefore ($ %) (shegon.repl/current-promt)) "output")
-        (u/js-map :value (str output)
-                  :readOnly true))
-    "focus" focus-only-input)
-  (scroll-down))
+  (js/console.log "adding " output)
+  (when output
+    (js/console.log "actually adding " s)
+    (.on
+      (js/CodeMirror.
+        #(.addClass (.insertBefore ($ %) (shegon.repl/current-promt)) "output")
+          (u/js-map :value (str output)
+                    :readOnly true))
+      "focus" focus-only-input)
+    (scroll-down)))
 
 (defn do-repl []
   (let [inp (.getValue @input)]
