@@ -31,7 +31,7 @@
   (reset! input
     (js/CodeMirror.
       (first ($repl-el))
-      (u/js-map :value "(+ 1 2)"
+      (u/js-map :value ""
                 :extraKeys input-keymap
                 :mode "clojure")))
   (.focus @input)
