@@ -30,6 +30,9 @@
     (u/js-map :line last-line
               :ch (.-length (.getLine cm last-line)))))
 
+(defn input-value []
+  (.getValue @input))
+
 (defn create-input []
   (reset! input
     (js/CodeMirror.
@@ -42,7 +45,8 @@
   (.setCursor @input (last-pos @input))
   (reset! $input ($ (.getWrapperElement @input)))
   (.addClass @$input "input user")
-  (.on @input "change" scroll-down))
+  (.on @input "change" scroll-down)
+  (.on @input "change" #(h/changed-current (input-value))))
 
 (defn add-prompt []
   (js/CodeMirror.
@@ -70,7 +74,7 @@
     (str prompt (.replace input "\n" (+ "\n" indent)))))
 
 (defn do-repl []
-  (let [inp (.getValue @input)]
+  (let [inp (input-value)]
     (h/add-input inp)
     (add-output (format-input "shegon.user=>  " inp) true)
     (eval-print inp)
@@ -82,7 +86,7 @@
       (js/setTimeout #(.focus @input) 100))))
 
 (defn history-move [direction]
-  (.setValue @input (h/move (.getValue @input) direction))
+  (.setValue @input (h/move direction))
   (.setCursor @input (last-pos @input)))
 
 ($ (fn []

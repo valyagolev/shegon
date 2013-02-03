@@ -16,27 +16,25 @@
       (dec val)
       val))
 
-(defn history-el [i]
-  (if (= i -1)
+(defn history-el []
+  (if (= @-history-pos -1)
       @-history-current
-      (nth @-history-log i)))
+      (nth @-history-log @-history-pos)))
 
 
 (defn add-input [input]
   (swap! -history-log conj input))
 
-(defn reset-pos []
-  (reset! -history-current -1))
+(defn changed-current [current]
+  (when (or (not= (history-el) current))
+    (reset! -history-current current)
+    (reset! -history-pos -1)))
 
-(defn move [current direction]
-  (when (= @-history-pos -1)
-    (reset! -history-current current))
-
-  (if (= direction :up)
-    (swap! -history-pos accurate-inc (dec (count @-history-log)))
-    (swap! -history-pos accurate-dec -1))
-
-  (history-el @-history-pos))
+(defn move [direction]
+  (case direction
+    :up   (swap! -history-pos accurate-inc (dec (count @-history-log)))
+    :down (swap! -history-pos accurate-dec -1))
+  (history-el))
 
 (defn commit-to-local-storage [_ _ _ ns]
   (set! window.localStorage/repl-history
