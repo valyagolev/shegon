@@ -4,6 +4,7 @@
 (def -history-pos (atom -1))
 (def -history-current (atom ""))
 
+(def -local-storage-history-limit 100)
 
 (defn accurate-inc [val max]
   (if (< val max)
@@ -37,4 +38,17 @@
 
   (history-el @-history-pos))
 
+(defn commit-to-local-storage [_ _ _ ns]
+  (set! window.localStorage/repl-history
+    (JSON/stringify
+      (clj->js
+        (take -local-storage-history-limit ns)))))
+
+(when window.localStorage/repl-history
+  (reset! -history-log
+    (seq
+      (js->clj
+        (JSON/parse window.localStorage/repl-history)))))
+
+(add-watch shegon.history/-history-log :localStorage commit-to-local-storage)
 
