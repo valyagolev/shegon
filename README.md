@@ -20,7 +20,7 @@ And in another terminal:
 
 Then open your broswer: http://localhost:8080/ and behold:
 
-![here we go](https://ucarecdn.com/47d02553-59f1-422e-8851-457cd06105cf/)
+![here we go](https://ucarecdn.com/ea3487f3-656f-4bfe-8c2e-d824c44dccfe/)
 
 Create some `.cljs` file in the classpath, as you would do with `.clj` file.
 Try to `(require 'my.module)` it (only this simplest form works for now).
