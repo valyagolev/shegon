@@ -36,7 +36,7 @@ body {
 }
 #repl .CodeMirror.prompt {
     float: left;
-    margin-right: -21px;
+    margin-right: -30px;
 }
 .CodeMirror.prompt {
     background-color: rgb(240, 240, 240);

@@ -11,9 +11,9 @@
         js))))
 
 
-(defn clojure-to-js-emit [s]
+(defn clojure-to-js-emit [s ns]
   (comp/with-core-cljs
-    (binding [ana/*cljs-ns* 'shegon.user
+    (binding [ana/*cljs-ns* ns
               ana/*cljs-file* "<fazil REPL>"]
 
       (when (nil? (ana/get-namespace ana/*cljs-ns*))
@@ -23,7 +23,7 @@
       (binding [ana/*cljs-ns* 'cljs.core]
         (ana/analyze
           (assoc (ana/empty-env) :ns (ana/get-namespace ana/*cljs-ns*) :context :statement)
-          `(def ~'*ns* 'shegon.user)))
+          `(def ~'*ns* ns)))
 
       (let [r (java.io.StringReader. s)
             ; env (setup/load-core-names)
@@ -45,15 +45,15 @@
               (comp/emit (ana/analyze env r))
               (recur (read pbr false eof false)))))))))
 
-(defn clojure-to-js [s]
+(defn clojure-to-js [s ns]
   (let [retn (atom nil)
-        result (with-out-str (reset! retn (clojure-to-js-emit s)))]
+        result (with-out-str (reset! retn (clojure-to-js-emit s ns)))]
     (assoc @retn :result result)))
 
 ; (defn dependencies [js-str]
 ;   (closure/cljs-dependencies {:output-dir "resources/public"} ["jayq.core"]))
 
 
-(defn compile-js [{:keys [source]}]
-    (try (clojure-to-js source)
+(defn compile-js [{:keys [source ns]}]
+    (try (clojure-to-js source (symbol ns))
         (catch Exception e {:exception e})))

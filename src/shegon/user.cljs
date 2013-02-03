@@ -26,8 +26,8 @@
         var old_provide = goog.provide;
         goog.provide = function(m) {
           try {
-            if (goog.isProvided_(m))
-              eval('delete ' + m);
+//            if (goog.isProvided_(m))
+//              eval('delete ' + m);
 
             old_provide(m);
           } catch (e) {
@@ -61,7 +61,8 @@
 
 (defn compile-str [code callback]
   (let [pr (ajax "/compiler" {:type :post
-                              :data {:source code}
+                              :data {:source code
+                                     :ns cljs.core/*ns*}
                               :dataType :jsonp})]
     (.done pr (fn [data] (callback {:result (.-result data)
                                     :error (.-exception data)
@@ -96,11 +97,20 @@ between sessions. Life is good. You look nice. Let's dance more!
 Try also stuff from shegon.user namespace:
   (log \"hello\")                   ; to write stuff down in the console
 
-  (emit-js \"(+ 1 1)\")             ; note that as this op and the next are
+  (emit-js \"(+ 1 1)\")             ; note that this op and the next one are
   (compile-str \"(+ 1 1)\" log)     ; async operations. in the second
                                   ; case you can supply a callback
 
+  (ns some.ns)                    ; changes ns where you're in
+                                  ; (I hope it makes sense, didn't figure
+                                  ; Clojure namespaces completely yet)
+
   (require 'your.module)          ; compiles and (re-)loads your module
+                                  ; from .cljs file on your classpath
+                                  ; (note that classpath is not a
+                                  ;   :cljsbuild :builds :source-paths
+                                  ; thing but rather like clojure classpath
+                                  ; by default it's src/)
                                   ; very nice!
 
 This thingy is open-source: https://github.com/va1en0k/shegon"))

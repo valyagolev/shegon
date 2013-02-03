@@ -1,5 +1,7 @@
 # shegon
 
+![here we go](https://ucarecdn.com/472df9f8-a8e4-492b-95b2-7ae7d61e330a/)
+
 Just my take on making a REPL for ClojureScript. Re-inventing the wheel, probably.
 
 The best thing? It can `require` modules, reloading them if necessary, so
@@ -7,6 +9,11 @@ it may be actually a little bit close to being useful.
 
 Also, a simple API/web service for compiling chunks of ClojureScript code,
 so you can `eval` and everything.
+
+It works with namespaces like a boss (not sure about the sanity of the boss
+in question btw):
+
+![namespaces](https://ucarecdn.com/36d93c7f-d7df-4306-b16b-81af82d0fc82/)
 
 ## Usage
 
@@ -18,12 +25,7 @@ And in another terminal:
 
     lein run
 
-Then open your broswer: http://localhost:8080/ and behold:
-
-![here we go](https://ucarecdn.com/ea3487f3-656f-4bfe-8c2e-d824c44dccfe/)
-
-Create some `.cljs` file in the classpath, as you would do with `.clj` file.
-Try to `(require 'my.module)` it (only this simplest form works for now).
+Then open your broswer: http://localhost:8080/ and behold.
 
 ## License
 
