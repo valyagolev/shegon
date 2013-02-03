@@ -13,7 +13,7 @@ so you can `eval` and everything.
 It works with namespaces like a boss (not sure about the sanity of the boss
 in question btw):
 
-![namespaces](https://ucarecdn.com/36d93c7f-d7df-4306-b16b-81af82d0fc82/)
+![namespaces](https://ucarecdn.com/34167742-0b93-44c7-9215-66f91e6b4549/)
 
 ## Usage
 

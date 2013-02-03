@@ -67,7 +67,8 @@
     (.done pr (fn [data] (callback {:result (.-result data)
                                     :error (.-exception data)
                                     :ns (.-ns data)})))
-    (.fail pr (fn [error] (callback {:error error})))))
+    (.fail pr (fn [error] (callback {:error error}))))
+  nil)
 
 
 (defn emit-js [code]
