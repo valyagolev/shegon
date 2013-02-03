@@ -9,26 +9,9 @@
 
 (declare do-repl)
 
-(defn compile-cljs [code callback]
-  (let [pr (ajax "/compiler" {:type :post
-                              :data {:source code}
-                              :dataType :jsonp})]
-    (.done pr (fn [data] (callback {:result (.-result data)
-                                    :error (.-exception data)})))
-    (.fail pr (fn [error] (callback {:error error})))))
 
-(defn js-eval [code]
-  (try
-    {:result (js/eval code)}
-    (catch js/Error e {:error (.-stack e)})))
-
-(defn cljs-eval [code]
-  (compile-cljs code
-    #(do (add-output (:error %))
-         (when-let [code (:result %)]
-            (let [eres (js-eval code)]
-              (add-output (:error eres))
-              (add-output (:result eres)))))))
+(defn eval-print [code]
+  (u/eval code #(add-output (or (:error %) (:result %)))))
 
 
 (def input-keymap
@@ -83,7 +66,7 @@
 (defn do-repl []
   (let [inp (.getValue @input)]
     (add-output (format-input "shegon.user=>  " inp))
-    (cljs-eval inp)
+    (eval-print inp)
     (.setValue @input "")))
 
 (defn focus-only-input [cm]
@@ -97,6 +80,6 @@
 
     (create-input)
     (add-prompt)
-    (add-output "(help)")
+    (eval-print "(help)")
 
     ))
