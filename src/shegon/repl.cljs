@@ -3,6 +3,12 @@
   (:use [jayq.core :only [$ ajax]]))
 
 
+
+(def input (atom nil))
+(def $input (atom nil))
+
+(declare do-repl)
+
 (defn compile-cljs [code callback]
   (let [pr (ajax "/compiler" {:type :post
                               :data {:source code}
@@ -24,13 +30,11 @@
               (add-output (:error eres))
               (add-output (:result eres)))))))
 
-(def input (atom nil))
-(def $input (atom nil))
-
-(declare do-repl)
 
 (def input-keymap
-  (u/js-map :Enter #(do-repl)))
+  (u/js-map :Enter #(do-repl)
+            :Ctrl-Enter "newlineAndIndent"
+            :Alt-Enter "newlineAndIndent"))
 
 (defn $repl-el [] ($ "#repl"))
 (defn scroll-down [] (.scrollTop ($repl-el) (.-scrollHeight (first ($repl-el)))))
@@ -45,44 +49,42 @@
     (js/CodeMirror.
       (first ($repl-el))
       (u/js-map :value "(+ 1 2)"
-                :extraKeys input-keymap)))
+                :extraKeys input-keymap
+                :mode "clojure")))
   (.focus @input)
   (.setCursor @input (last-pos @input))
   (reset! $input ($ (.getWrapperElement @input)))
   (.addClass @$input "input")
   (.on @input "change" scroll-down))
 
-(defn add-promt []
+(defn add-prompt []
   (js/CodeMirror.
-    #(.addClass (.insertBefore ($ %) @$input) "promt")
+    #(.addClass (.insertBefore ($ %) @$input) "prompt")
       (u/js-map :value "shegon.user=>"
                 :readOnly true)))
 
-(defn current-promt []
-  (.last ($ ".CodeMirror.promt")))
+(defn current-prompt []
+  (.last ($ ".CodeMirror.prompt")))
 
 (defn add-output [output]
-  (js/console.log "adding " output)
   (when output
-    (js/console.log "actually adding " s)
     (.on
       (js/CodeMirror.
-        #(.addClass (.insertBefore ($ %) (shegon.repl/current-promt)) "output")
+        #(.addClass (.insertBefore ($ %) (shegon.repl/current-prompt)) "output")
           (u/js-map :value (str output)
                     :readOnly true))
       "focus" focus-only-input)
     (scroll-down)))
 
+(defn format-input [prompt input]
+  (let [indent (.replace prompt (js* "/./g") " ")]
+    (str prompt (.replace input "\n" (+ "\n" indent)))))
+
 (defn do-repl []
   (let [inp (.getValue @input)]
-    (add-output (str "shegon.user=>  " inp))
+    (add-output (format-input "shegon.user=>  " inp))
     (cljs-eval inp)
     (.setValue @input "")))
-
-
-
-
-
 
 (defn focus-only-input [cm]
   (let [sel (.getSelection cm)]
@@ -94,7 +96,7 @@
     (.html ($repl-el) "")
 
     (create-input)
-    (add-promt)
+    (add-prompt)
     (add-output "(help)")
 
     ))

@@ -29,11 +29,11 @@ body {
     height: auto;
     background-color: white;
 }
-#repl .CodeMirror.promt {
+#repl .CodeMirror.prompt {
     float: left;
     margin-right: -21px;
 }
-.CodeMirror.promt {
+.CodeMirror.prompt {
     background-color: rgb(240, 240, 240);
 }
 
