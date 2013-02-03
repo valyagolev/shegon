@@ -1,6 +1,7 @@
 (ns shegon.user
   (:use [jayq.core :only [ajax]]))
 
+; (js/console.log "loading shegon.user")
 
 (defn log [& a]
   (shegon.repl/add-output (apply str a))
@@ -14,7 +15,7 @@
         provides (.-provides module)]
     (log "Loading " provides)
 
-    (.ajax $ url (js-map :dataType "script"))
+    (ajax url {:dataType "script"})
 
     ;; I've considered deleting modules before loading
     ; (str
@@ -27,13 +28,22 @@
     ))
 
 ;; goog.provide doesn't allow us to reload modules :-(
-(let [old (.-provide js/goog)]
-  (set! js/goog.provide
-    (fn [m]
-      (try
-        (old m)
-        (catch js/Error e nil)))))
+;; can't be sure even cljs.core is loaded there :/
+;; so have to write js
+(js* "(function(){
+        var old_provide = goog.provide;
+        goog.provide = function(m) {
+          try {
+            if (goog.isProvided_(m))
+              eval('delete ' + m);
 
+            old_provide(m);
+          } catch (e) {
+            console.log('Error loading ', m, e);
+            debugger;
+          }
+        };
+      }());")
 
 (defn require [& modules]
   (log "Loading asynchronously...")
