@@ -19,7 +19,7 @@
                            "/codemirror/javascript.js"
                            "/codemirror/matchbrackets.js"
                            "/js/jquery-1.9.0.min.js"
-                           "/js/shegon-cljs.js")]
+                           "/js/shegon.js")]
               [:body
                [:div#wrapper
                 content]]

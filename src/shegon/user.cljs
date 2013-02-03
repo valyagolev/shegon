@@ -10,13 +10,6 @@
 (defn js-map [& clauses]
   (clj->js (apply hash-map clauses)))
 
-(defn load-module [module]
-  (let [url (.-url module)
-        provides (.-provides module)]
-    (log "Loading " provides)
-
-    (ajax url {:dataType "script"})))
-
 ;; goog.provide doesn't allow us to reload modules :-(
 ;; can't be sure even cljs.core is loaded there :/
 ;; so have to write js
@@ -46,6 +39,13 @@
 
       };
       "))
+
+(defn load-module [module]
+  (let [url (.-url module)
+        provides (.-provides module)]
+    (log "Loading " provides)
+
+    (ajax url {:dataType "script"})))
 
 (defn require [& modules]
   (log "Loading asynchronously...") ; Open the console if it never says loaded.")
@@ -80,8 +80,6 @@
                    (eval-js (:result %))
                    %))))
 
-
-
 (defn help []
   (log
 "Hey! This is Shegon ClojureScript REPL talking.
@@ -96,5 +94,7 @@ Try also stuff from shegon.user namespace:
                                   ; case you can supply a callback
 
   (require 'your.module)          ; compiles and (re-)loads your module
-                                  ; very nice!"))
+                                  ; very nice!
+
+This thingy is open-source: https://github.com/va1en0k/shegon"))
 
