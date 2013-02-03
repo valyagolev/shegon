@@ -18,7 +18,7 @@
   (u/eval code
     #(do
       (.setValue @prompt (prompt-value))
-      (add-output (or (:error %) (:result %))))))
+      (add-output (or (:error %) (pr-str (:result %)))))))
 
 
 (def input-keymap
@@ -78,7 +78,7 @@
 
 (defn format-input [prompt input]
   (let [indent (.replace prompt (js* "/./g") " ")]
-    (str prompt (.replace input "\n" (+ "\n" indent)))))
+    (str prompt (.replace input (js* "/\\n/g") (+ "\n" indent)))))
 
 (defn do-repl []
   (let [inp (input-value)]
