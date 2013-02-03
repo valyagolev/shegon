@@ -15,6 +15,10 @@
   (comp/with-core-cljs
     (binding [ana/*cljs-ns* 'shegon.user
               ana/*cljs-file* "<fazil REPL>"]
+
+      (when (nil? (ana/get-namespace ana/*cljs-ns*))
+        (ana/set-namespace ana/*cljs-ns* {:name ana/*cljs-ns*}))
+
       (let [r (java.io.StringReader. s)
             ; env (setup/load-core-names)
             ; env (assoc-in (ana/empty-env) [:locals '*ns*] ana/*cljs-ns*)

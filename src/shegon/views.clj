@@ -22,8 +22,7 @@
                            "/js/shegon.js")]
               [:body
                [:div#wrapper
-                content]]
-               [:div#repl]))
+                content]]))
 
 
 (defpartial compiler-form [{:keys [source]}]
@@ -40,11 +39,8 @@
         [:script "var textarea = document.getElementById('" source# "');
                   CodeMirror.fromTextArea(textarea, {'readOnly': true});"]]))
 
-(defpage [:get "/repl"] []
-  (layout
-      ; [:textarea {:class "repl"}]
-
-      ))
+(defpage [:get "/"] []
+  (layout [:div#repl]))
 
 
 (defpartial compiler-page [params result]
@@ -57,10 +53,10 @@
   (compiler-page {:source "(defn plus [a b] (+ a b))\n\n(js/alert (plus 19 19))"}))
 
 
-(defpage [:get "/"] []
-  (layout
-    [:ul
-      [:li [:a {:href "/compiler"} "Compiler"]]]))
+; (defpage [:get "/"] []
+;   (layout
+;     [:ul
+;       [:li [:a {:href "/compiler"} "Compiler"]]]))
 
 
 (defn map-key [m k f]
@@ -69,6 +65,7 @@
     m))
 
 
+;; The API
 (defpage [:post "/compiler"] {:keys [callback] :as params}
   (let [result (shegon.compiler/compile-js params)]
     (if callback

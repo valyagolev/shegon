@@ -75,11 +75,8 @@
       (js/setTimeout #(.focus @input) 100))))
 
 ($ (fn []
-
     (.html ($repl-el) "")
 
     (create-input)
     (add-prompt)
-    (eval-print "(help)")
-
-    ))
+    (eval-print "(help)")))
