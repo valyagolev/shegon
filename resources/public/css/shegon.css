@@ -25,6 +25,11 @@ body {
     line-height: 19px;
 }
 
+#repl .CodeMirror.user {
+    font-weight: bolder;
+}
+
+
 #repl .CodeMirror.input {
     height: auto;
     background-color: white;

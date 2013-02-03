@@ -41,23 +41,25 @@
   (.focus @input)
   (.setCursor @input (last-pos @input))
   (reset! $input ($ (.getWrapperElement @input)))
-  (.addClass @$input "input")
+  (.addClass @$input "input user")
   (.on @input "change" scroll-down))
 
 (defn add-prompt []
   (js/CodeMirror.
-    #(.addClass (.insertBefore ($ %) @$input) "prompt")
+    #(.addClass (.insertBefore ($ %) @$input) "prompt user")
       (u/js-map :value "shegon.user=>"
                 :readOnly true)))
 
 (defn current-prompt []
   (.last ($ ".CodeMirror.prompt")))
 
-(defn add-output [output]
+(defn add-output [output & [user?]]
   (when output
     (.on
       (js/CodeMirror.
-        #(.addClass (.insertBefore ($ %) (shegon.repl/current-prompt)) "output")
+        #(.addClass
+            (.insertBefore ($ %) (shegon.repl/current-prompt))
+            (str "output" (when user? " user")))
           (u/js-map :value (str output)
                     :readOnly true))
       "focus" focus-only-input)
@@ -70,7 +72,7 @@
 (defn do-repl []
   (let [inp (.getValue @input)]
     (h/add-input inp)
-    (add-output (format-input "shegon.user=>  " inp))
+    (add-output (format-input "shegon.user=>  " inp) true)
     (eval-print inp)
     (.setValue @input "")))
 
