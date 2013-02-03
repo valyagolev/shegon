@@ -1,6 +1,9 @@
 (ns shegon.user
   (:use [jayq.core :only [ajax]]))
 
+; that feels wrong
+(set! cljs.core/*ns* 'shegon.user)
+
 (defn log [& a]
   (when
     shegon.repl/add-output
@@ -61,7 +64,8 @@
                               :data {:source code}
                               :dataType :jsonp})]
     (.done pr (fn [data] (callback {:result (.-result data)
-                                    :error (.-exception data)})))
+                                    :error (.-exception data)
+                                    :ns (.-ns data)})))
     (.fail pr (fn [error] (callback {:error error})))))
 
 
@@ -74,10 +78,13 @@
     (catch js/Error e {:error (.-stack e)})))
 
 (defn eval [code callback]
-  (compile-str code
-    #(callback (if (:result %)
-                   (eval-js (:result %))
-                   %))))
+  (compile-str code (fn [{:keys [result ns] :as compile_result}]
+    (if result
+      (let [retval (eval-js result)]
+        (when ns
+          (set! cljs.core/*ns* (symbol ns)))
+        (callback (merge compile_result retval)))
+      (callback compile_result)))))
 
 (defn help []
   (log

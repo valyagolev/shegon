@@ -19,10 +19,11 @@
       (when (nil? (ana/get-namespace ana/*cljs-ns*))
         (ana/set-namespace ana/*cljs-ns* {:name ana/*cljs-ns*}))
 
+      ; telling compiler – but not interpreter! – about *ns*
       (binding [ana/*cljs-ns* 'cljs.core]
-        (comp/emit (ana/analyze
+        (ana/analyze
           (assoc (ana/empty-env) :ns (ana/get-namespace ana/*cljs-ns*) :context :statement)
-          `(def ~'*ns* '~ana/*cljs-ns*))))
+          `(def ~'*ns* 'shegon.user)))
 
       (let [r (java.io.StringReader. s)
             ; env (setup/load-core-names)

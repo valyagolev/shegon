@@ -3,16 +3,22 @@
             [shegon.history :as h])
   (:use [jayq.core :only [$ ajax]]))
 
-
-
 (def input (atom nil))
 (def $input (atom nil))
 
+(def prompt (atom nil))
+
+
 (declare do-repl)
 
+(defn prompt-value []
+  (str cljs.core/*ns* "=> "))
 
 (defn eval-print [code]
-  (u/eval code #(add-output (or (:error %) (:result %)))))
+  (u/eval code
+    #(do
+      (.setValue @prompt (prompt-value))
+      (add-output (or (:error %) (:result %))))))
 
 
 (def input-keymap
@@ -48,11 +54,12 @@
   (.on @input "change" scroll-down)
   (.on @input "change" #(h/changed-current (input-value))))
 
-(defn add-prompt []
-  (js/CodeMirror.
-    #(.addClass (.insertBefore ($ %) @$input) "prompt user")
-      (u/js-map :value "shegon.user=>"
-                :readOnly true)))
+(defn create-prompt []
+  (reset! prompt
+    (js/CodeMirror.
+      #(.addClass (.insertBefore ($ %) @$input) "prompt user")
+        (u/js-map :value (prompt-value)
+                  :readOnly true))))
 
 (defn current-prompt []
   (.last ($ ".CodeMirror.prompt")))
@@ -76,7 +83,7 @@
 (defn do-repl []
   (let [inp (input-value)]
     (h/add-input inp)
-    (add-output (format-input "shegon.user=>  " inp) true)
+    (add-output (format-input (prompt-value) inp) true)
     (eval-print inp)
     (.setValue @input "")))
 
@@ -93,5 +100,5 @@
     (.html ($repl-el) "")
 
     (create-input)
-    (add-prompt)
+    (create-prompt)
     (eval-print "(help)")))
