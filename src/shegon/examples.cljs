@@ -14,17 +14,15 @@
     (catch js/Error e e)))
 
 (defn render-example [ex]
-  (js/$
-    (template/node
-      [:div.example
-        [:div.description (:descr ex)]
-        [:div.result (pr-str (call-example ex))]])))
+  (template/node
+    [:div.example
+      [:div.description (:descr ex)]
+      [:div.result (pr-str (call-example ex))]]))
 
 
 (defn render-to [$el]
   (doseq [ex @-examples]
-    (js/console.log (render-example ex))
-    (-> (render-example ex) (.appendTo $el))))
+    (.append $el (render-example ex))))
 
 
 
