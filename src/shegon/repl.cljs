@@ -1,12 +1,30 @@
 (ns shegon.repl
   (:require [shegon.user :as u]
-            [shegon.history :as h])
+            [shegon.history :as h]
+            [shegon.examples :as e])
   (:use [jayq.core :only [$ ajax]]))
 
 (def input (atom nil))
 (def $input (atom nil))
 
 (def prompt (atom nil))
+
+(defn create-if-not-exists [$parent class creator]
+  (let [el ($ (str "." class) $parent)]
+    (if (not= (.-length el) 0)
+      el
+      (-> (str "<div class='" class "'></div>")
+          $
+          creator))))
+
+(defn $main-repl-el [] ($ "#repl"))
+(defn $repl-el [] (create-if-not-exists ($main-repl-el) "repl-itself" #(.appendTo % ($main-repl-el))))
+(defn $right-panel [] (create-if-not-exists ($main-repl-el) "right-panel" #(.insertAfter % ($repl-el))))
+
+
+
+(defn scroll-down []
+  (.scrollTop ($repl-el) (.-scrollHeight (first ($repl-el)))))
 
 
 (declare do-repl)
@@ -18,7 +36,9 @@
   (u/eval code
     #(do
       (.setValue @prompt (prompt-value))
-      (add-output (or (:error %) (pr-str (:result %)))))))
+      (add-output (or (:error %) (pr-str (:result %))))
+      (render-examples))))
+
 
 
 (def input-keymap
@@ -27,9 +47,6 @@
             :Alt-Enter "newlineAndIndent"
             :Up #(history-move :up)
             :Down #(history-move :down)))
-
-(defn $repl-el [] ($ "#repl"))
-(defn scroll-down [] (.scrollTop ($repl-el) (.-scrollHeight (first ($repl-el)))))
 
 (defn last-pos [cm]
   (let [last-line (- (.lineCount cm) 1)]
@@ -105,6 +122,7 @@
 
 ($ (fn []
     (.html ($repl-el) "")
+    (.html ($right-panel) "")
 
     (create-input)
     (create-prompt)

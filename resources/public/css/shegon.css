@@ -13,9 +13,25 @@ body {
 }
 
 #repl {
-    border: 1px solid black;
+
+}
+
+#repl .repl-itself {
+    width: 800px;
     height: 600px;
     overflow-y: scroll;
+    border: 1px solid black;
+
+    margin-right: 6px;
+
+    float: left;
+}
+#repl .right-panel {
+
+    padding-left: 5px;
+}
+#repl .right-panel .example {
+    width: 100%;
 }
 
 
