@@ -96,9 +96,17 @@
   (.setValue @input (h/move direction))
   (.setCursor @input (last-pos @input)))
 
+(defn render-examples []
+  (e/render-to
+    (.empty ($right-panel))))
+
+(defn log-onerror []
+  (set! js/window.onerror (fn [exc src line] (u/log "Top level exception: \n  " exc " at " src ":" line))))
+
 ($ (fn []
     (.html ($repl-el) "")
 
     (create-input)
     (create-prompt)
-    (eval-print "(help)")))
+    (eval-print "(help)")
+    (log-onerror)))
