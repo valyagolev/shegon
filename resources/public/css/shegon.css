@@ -13,7 +13,7 @@ body {
 }
 
 #repl {
-
+    position: relative;
 }
 
 #repl .repl-itself {
@@ -22,17 +22,22 @@ body {
     overflow-y: scroll;
     border: 1px solid black;
 
-    margin-right: 6px;
+    position: absolute;
+    top: 0;
+    left: 0;
 
-    float: left;
 }
 #repl .right-panel {
-
-    padding-left: 5px;
+    margin-left: 809px;
+    margin-right: 16px;
 }
 #repl .right-panel .example {
     width: 100%;
+    border: 1px dashed;
+    margin-bottom: 9px;
+    padding: 3px 7px;
 }
+
 
 
 #repl .CodeMirror {

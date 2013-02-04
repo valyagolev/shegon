@@ -12,7 +12,7 @@
 
 (defn render-to [$el]
   (doseq [ex @-examples]
-     (.appendTo (js/$ (str "<div class='example'><div>" (pr-str (call-example ex)) "</div></div>")) $el)))
+     (.appendTo (js/$ (str "<div class='example'>" (pr-str (call-example ex)) "</div>")) $el)))
 
 (example (fn [] (js/$ "<div>Hey</div>")))
 (example (fn [] (+ 1 2)))
