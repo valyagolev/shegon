@@ -1,19 +1,31 @@
-(ns shegon.examples)
+(ns shegon.examples
+  (:require-macros [shegon.macros :as ms]))
 
 
 (def -examples (atom []))
 
-(defn example [f] (swap! -examples conj f))
+(defn add-example [descr f]
+  (swap! -examples
+    conj {:renderer f :descr descr}))
 
 (defn call-example [ex]
   (try
-    (ex)
+    ((:renderer ex))
     (catch js/Error e e)))
 
 (defn render-to [$el]
   (doseq [ex @-examples]
-     (.appendTo (js/$ (str "<div class='example'>" (pr-str (call-example ex)) "</div>")) $el)))
+    (.appendTo (js/$ (str
+      "<div class='example'>
+        <div class='description'>" (:descr ex) "</div>
+        <div class='result'>" (pr-str (call-example ex)) "</div>
+      </div>")) $el)))
 
-(example (fn [] (js/$ "<div>Hey</div>")))
-(example (fn [] (+ 1 2)))
+
+(ms/example
+  (js/$ "<div>Hey</div>"))
+
+(ms/example
+  (+ 1 2))
+
 
