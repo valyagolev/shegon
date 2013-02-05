@@ -23,7 +23,7 @@ $(function() {
         }());
     }
 
-    loadScript('/_resource/goog/base.js', function() {
+    loadScript('/_resources/goog/base.js', function() {
         goog.require = function() {};
 
         $.ajax('/requires', {'data': {'modules': ['shegon.repl']},
