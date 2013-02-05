@@ -5,12 +5,4 @@
                            [org.clojure/clojurescript "0.0-1552"]
                            [clj-stacktrace "0.2.5"]
                            [jayq "2.0.0"]]
-            :plugins [[lein-cljsbuild "0.3.0"]]
-            :cljsbuild {:builds [{:source-paths ["src/"]
-                        :compiler {
-                            :output-to "out/shegon/shegon.js"
-                            ; :optimizations :simple
-                            :pretty-print true
-                            ; :incremental true
-                            }}]}
             :main shegon.server)

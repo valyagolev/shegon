@@ -5,7 +5,8 @@
 Just my take on making a REPL for ClojureScript. Re-inventing the wheel, probably.
 
 The best thing? It can `require` modules, reloading them if necessary, so
-it may be actually a little bit close to being useful.
+it may be actually a little bit close to being useful. It does not require
+`cljsbuild` to be working.
 
 Also, a simple API/web service for compiling chunks of ClojureScript code,
 so you can `eval` and everything.
@@ -17,11 +18,7 @@ in question btw):
 
 ## Usage
 
-You should run:
-
-    lein cljsbuild auto
-
-And in another terminal:
+Run:
 
     lein run
 
