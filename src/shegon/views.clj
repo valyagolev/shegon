@@ -19,7 +19,7 @@
                            "/codemirror/javascript.js"
                            "/codemirror/matchbrackets.js"
                            "/js/jquery-1.9.0.min.js"
-                           "/js/shegon.js")]
+                           "/js/shegon-bootstrap.js")]
               [:body
                [:div#wrapper
                 content]]))
@@ -79,3 +79,7 @@
   (resp/jsonp callback (shegon.namespaces/load-modules modules)))
 
 
+(defpage [:get ["/_resource/:name" :name #".*"]] {:keys [name]}
+  {:status 200
+   :headers {}
+   :body (.getContent (clojure.java.io/resource name))})
