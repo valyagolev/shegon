@@ -10,5 +10,5 @@
 
                            [jayq "2.0.0"]]
             :plugins [[lein-ring "0.8.2"]]
-            :ring {:handler shegon.server/runserver})
+            :ring {:handler shegon.server/server})
 

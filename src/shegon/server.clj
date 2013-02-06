@@ -43,7 +43,7 @@
 
 
 (defroutes app-routes
-  (GET "/" [] (layout [:div#repl]))
+  (GET "/" [] (layout [:div#repl "Loading... May take time if you've just ran it"]))
 
   (POST "/requires" {{:keys [callback modules]} :params}
     (jsonp-or-json (shegon.namespaces/load-modules modules) callback))
@@ -62,5 +62,7 @@
 
   (route/resources "/resources/"))
 
-(def runserver
+
+(def server
   (handler/site app-routes))
+
