@@ -10,6 +10,10 @@
             [shegon.namespaces])
   (:use [hiccup.page :only [include-css include-js html5]]))
 
+(defn include-cljs [& modules]
+  (apply include-js
+    (cons "/_resources/goog/base.js"
+      (map :url (shegon.namespaces/load-modules modules)))))
 
 (defn layout [& content]
   (html5
@@ -22,8 +26,8 @@
                  "/resources/codemirror/clojure.js"
                  "/resources/codemirror/javascript.js"
                  "/resources/codemirror/matchbrackets.js"
-                 "/resources/js/jquery-1.9.0.min.js"
-                 "/resources/js/shegon-bootstrap.js")]
+                 "/resources/js/jquery-1.9.0.min.js")
+     (include-cljs "shegon.repl")]
     [:body
      [:div#wrapper
       content]]))
