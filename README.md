@@ -20,9 +20,9 @@ in question btw):
 
 Run:
 
-    lein run
+    lein ring server
 
-Then open your broswer: http://localhost:8080/ and behold.
+Then open your broswer: http://localhost:3000/ and behold.
 
 ## License
 

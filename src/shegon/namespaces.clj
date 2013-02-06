@@ -8,8 +8,8 @@
 
 (defn url-path-for-module [{:keys [url file]}]
   (cond
-    file (str "/_resource/" file)
-    url  (clojure.string/replace (.getPath url) (public-output-path) "/_compiled")))
+    file (str "/_resources/" file)
+    url  (clojure.string/replace (.getPath url) (public-output-path) "resources/_compiled")))
 
 
 (defn load-modules [requires]
