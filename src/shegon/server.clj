@@ -1,19 +1,32 @@
 (ns shegon.server
-  (:use compojure.core)
-  (:require [compojure.route :as route]
+  (:require [clojure.data.json :as json]
+
+            [ring.adapter.jetty]
+            [ring.middleware.reload]
+
+
+
+            [compojure.route :as route]
             [compojure.handler :as handler]
-            [clojure.data.json :as json]
 
             [clj-stacktrace.repl]
 
             [shegon.compiler]
             [shegon.namespaces])
-  (:use [hiccup.page :only [include-css include-js html5]]))
+  (:use [hiccup.page :only [include-css include-js html5]]
+        [hiccup.core :only [html]]
+        [compojure.core]))
+
+(declare run-if-not-running)
 
 (defn include-cljs [& modules]
-  (apply include-js
-    (cons "/_resources/goog/base.js"
-      (map :url (shegon.namespaces/load-modules modules)))))
+  (run-if-not-running)
+
+  (html
+    (include-js "http://127.0.0.1:19000/_resources/goog/base.js")
+    (map #(include-js (:url %)) (shegon.namespaces/load-modules modules))))
+
+
 
 (defn layout [& content]
   (html5
@@ -64,9 +77,31 @@
      :headers {}
      :body (.getContent (clojure.java.io/resource name))})
 
+  (route/files "/_compiled" {
+    :root @shegon.namespaces/public-output-path
+  })
+
   (route/resources "/resources/"))
 
 
 (def server
-  (handler/site app-routes))
+  (ring.middleware.reload/wrap-reload
+    (handler/site app-routes)))
 
+
+(defonce running-server (atom nil))
+
+(defn run-if-not-running []
+  (when (nil? @running-server)
+    (println "Running internal shegon CLJS server at http://127.0.0.1:19000/ ...")
+    (println "If it's the first compilation in this process, please wait...")
+    (reset! running-server
+      (ring.adapter.jetty/run-jetty server {
+        :port   19000
+        :join?  false
+      })))
+  @running-server)
+
+(defn -main []
+  (println "Joining the internal server")
+  (.join (run-if-not-running)))

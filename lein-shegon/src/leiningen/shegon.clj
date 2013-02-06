@@ -1,19 +1,14 @@
 (ns leiningen.shegon
-  (:require [clojure.java.io :as io]
-            [leiningen.core.user]
-            [ring.adapter.jetty]
-            [shegon.server]
-            [shegon.namespaces]))
+  (:require [shegon.server])
+  (:use [leiningen.core.eval :only [eval-in-project]]))
 
 (defn ^:no-project-needed shegon
   "Run a ClojureScript REPL web server."
   [project & keys]
 
-  (reset! shegon.namespaces/public-output-path
-    (.getAbsolutePath
-      (io/file (leiningen.core.user/leiningen-home) "shegon")))
-  (println "Output path:" @shegon.namespaces/public-output-path)
-  (ring.adapter.jetty/run-jetty shegon.server/server {
-      :port   19000
-      :join?  true   ; yay blocking
-    }))
+  (if project
+    (eval-in-project (update-in project [:dependencies]
+                                   conj ['shegon "0.1.0-SNAPSHOT"])
+      (.join (shegon.server/run-if-not-running)))
+
+    (.join (shegon.server/run-if-not-running))))

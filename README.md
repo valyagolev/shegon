@@ -1,28 +1,69 @@
 # shegon
 
+Shegon is a library for serving ClojureScript assets (during development).
+
+It provides a function `(include-cljs "my.module" "another.one")` which
+returns a series of `<script>` tags to use, and a REPL right in your browser,
+which is able to reload code from your modules on the fly, without reloading
+a page.
+
+## Serving ClojureScript
+
+This is pretty straight-forward:
+
+1. Add `[shegon "0.1.1"]` to your `:dependencies`
+2. Use `(shegon.server/include-cljs "my.cljs.module" "another.one")` to get
+`<script>` tags, for example when rendering the `<head>` tag.
+
+**Please note** that all the modules should be on your `classpath` (unlike when
+using `cljsbuild`), for example in your `src` folder!
+
+It works by running a special server inside your app and giving you links to
+the compiled javascripts served using that very server. I hope it's not too
+intrusive, you should hardly notice it if I've done it right.
+
+A screenshot:
+
+![script tags](https://ucarecdn.com/21b2bf97-a362-48a4-835c-304b1a80c2a5/)
+
+Please note that CLJS is compiled when you use `(include-cljs)`, not when the
+file is served! If you don't want to run your own server to develop JS, try the
+next section: REPL.
+
+## REPL
+
+Shegon REPL is a ClojureScript REPL which runs right on the webpage. I'll make
+including it into your own webpage easier one day, for now you can just use the
+special REPL page:
+
 ![here we go](https://ucarecdn.com/472df9f8-a8e4-492b-95b2-7ae7d61e330a/)
-
-Just my take on making a REPL for ClojureScript. Re-inventing the wheel, probably.
-
-The best thing? It can `require` modules, reloading them if necessary, so
-it may be actually a little bit close to being useful. It does not require
-`cljsbuild` to be working.
-
-Also, a simple API/web service for compiling chunks of ClojureScript code,
-so you can `eval` and everything.
-
-It works with namespaces like a boss (not sure about the sanity of the boss
-in question btw):
 
 ![namespaces](https://ucarecdn.com/34167742-0b93-44c7-9215-66f91e6b4549/)
 
-## Usage
+If you want to use it in your project, try the first section (Serving
+ClojureScript) about how to install shegon. The very same server which serves
+the compiled JS serves the REPL. Open [http://127.0.0.1:19000/](http://127.0.0.1:19000/)
+and behold. (If you are still not using `(include-cljs)`, there is a function
+`(shegon.server/run-if-not-running)`). Take a look:
 
-Run:
+![loading modules](https://ucarecdn.com/de8cd031-add1-4d2f-a763-5ec3fde389fc/)
 
-    lein ring server
+If you don't want to create any projects you can install a `lein` plugin. Add
+`[lein-shegon "0.1.1"]` to your `:user :plugins` setting in
+`~/.lein/profiles.clj`. If the file is still empty this should work:
 
-Then open your broswer: http://localhost:3000/ and behold.
+    {:user {:plugins [[lein-shegon "0.1.1"]]}}
+
+If it's not you already know what to do.
+
+After that you can just run:
+
+    lein shegon
+
+And open [http://127.0.0.1:19000/](http://127.0.0.1:19000/) to get REPL'd.
+
+If you run it inside of a project it could use its classpath to `require` stuff
+but it does not yet :( So use `(run-if-not-running)` inside projects.
 
 ## License
 

@@ -2,16 +2,18 @@
   (:require [cljs.closure :as cc]
             [clojure.string :as string]
             [clojure.java.io :as io]
-            ))
+            [leiningen.core.user]))
 
 (def public-output-path
   (atom
-    (.getCanonicalPath (java.io.File. "resources/public/_compiled"))))
+    (.getAbsolutePath
+      (io/file (leiningen.core.user/leiningen-home) "shegon/_compiled"))))
 
 (defn url-path-for-module [{:keys [url file]}]
-  (cond
-    file (str "/_resources/" file)
-    url  (clojure.string/replace (.getPath url) @public-output-path "resources/_compiled")))
+  (str "http://127.0.0.1:19000"
+    (cond
+      file (str "/_resources/" file)
+      url  (clojure.string/replace (.getPath url) @public-output-path "/_compiled"))))
 
 
 (defn load-modules [requires]

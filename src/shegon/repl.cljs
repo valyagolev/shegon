@@ -108,5 +108,6 @@
 
     (create-input)
     (create-prompt)
+    (u/log "Wait for it...")
     (eval-print "(help)")
     (log-onerror)))
