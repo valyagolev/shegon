@@ -65,6 +65,12 @@ And open [http://127.0.0.1:19000/](http://127.0.0.1:19000/) to get REPL'd.
 If you run it inside of a project it could use its classpath to `require` stuff
 but it does not yet :( So use `(run-if-not-running)` inside projects.
 
+## Thanks
+
+If you're using the library, consider dropping me a message at me@valyagolev.net about how it goes.
+Or ping me at Twitter: [@valyagolev](https://twitter.com/valyagolev) . It's very new and I'm hoping to find out how
+to make it better.
+
 ## License
 
 Copyright (C) 2013 Valentin Golev (me@valyagolev.net)
