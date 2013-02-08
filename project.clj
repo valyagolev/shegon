@@ -1,4 +1,4 @@
-(defproject shegon "0.1.0-SNAPSHOT"
+(defproject shegon "0.1.1"
             :description "ClojureScript REPL able to require and reload your modules."
             :dependencies [[org.clojure/clojure "1.4.0"]
                            [org.clojure/clojurescript "0.0-1552"]
