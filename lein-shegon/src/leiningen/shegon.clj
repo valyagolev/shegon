@@ -8,7 +8,7 @@
 
   (if project
     (eval-in-project (update-in project [:dependencies]
-                                   conj ['shegon "0.1.0-SNAPSHOT"])
+                                   conj ['shegon "0.1.1"])
       (.join (shegon.server/run-if-not-running)))
 
     (.join (shegon.server/run-if-not-running))))
