@@ -1,7 +1,7 @@
 (ns shegon.repl
   (:require [shegon.user :as u]
             [shegon.history :as h])
-  (:use [jayq.core :only [$ ajax]]))
+  (:use [jayq.core :only [$]]))
 
 (def input (atom nil))
 (def $input (atom nil))

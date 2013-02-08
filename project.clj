@@ -6,10 +6,10 @@
                            [leiningen-core "2.0.0"]
 
                            [ring/ring-jetty-adapter "1.1.8"]
+                           [compojure "1.1.5"]
 
                            [clj-stacktrace "0.2.5"]
-
-                           [compojure "1.1.5"]
+                           [ring-anti-forgery "0.2.1"]
 
                            [jayq "2.0.0"]]
             :plugins [[lein-ring "0.8.2"]]

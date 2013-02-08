@@ -2,14 +2,16 @@
   (:require [clojure.data.json :as json]
 
             [ring.adapter.jetty]
-            [ring.middleware.reload]
-
-
+            [ring.middleware reload anti-forgery session params]
+            [ring.middleware.session.cookie]
+            [ring.util.anti-forgery]
 
             [compojure.route :as route]
             [compojure.handler :as handler]
 
             [clj-stacktrace.repl]
+
+            ; [shegon.security]
 
             [shegon.compiler]
             [shegon.namespaces])
@@ -17,7 +19,10 @@
         [hiccup.core :only [html]]
         [compojure.core]))
 
+
+(defonce running-server (atom nil))
 (declare run-if-not-running)
+
 
 (defn include-cljs [& modules]
   (run-if-not-running)
@@ -25,7 +30,6 @@
   (html
     (include-js "http://127.0.0.1:19000/_resources/goog/base.js")
     (map #(include-js (:url %)) (shegon.namespaces/load-modules modules))))
-
 
 
 (defn layout [& content]
@@ -42,13 +46,16 @@
                  "/resources/js/jquery-1.9.0.min.js")
      (include-cljs "shegon.repl")]
     [:body
+     (ring.util.anti-forgery/anti-forgery-field)
      [:div#wrapper
       content]]))
+
 
 (defn map-key [m k f]
   (if-let [v (k m)]
     (assoc m k (f v))
     m))
+
 
 (defn jsonp-or-json [data callback]
   {:status 200
@@ -85,11 +92,12 @@
 
 
 (def server
-  (ring.middleware.reload/wrap-reload
-    (handler/site app-routes)))
+  (-> (handler/site app-routes)
+      ring.middleware.anti-forgery/wrap-anti-forgery
+      (ring.middleware.session/wrap-session
+        {:store (ring.middleware.session.cookie/cookie-store)})
+      ring.middleware.params/wrap-params))
 
-
-(defonce running-server (atom nil))
 
 (defn run-if-not-running []
   (when (nil? @running-server)
@@ -101,6 +109,7 @@
         :join?  false
       })))
   @running-server)
+
 
 (defn -main []
   (println "Joining the internal server")

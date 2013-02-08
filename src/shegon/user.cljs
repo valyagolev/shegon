@@ -43,6 +43,11 @@
       };
       "))
 
+(js/$
+  (fn []
+    (def anti-forgery-token
+      (.attr (js/$ "#__anti-forgery-token") "value"))))
+
 (defn load-module [module]
   (let [url (.-url module)
         provides (.-provides module)]
@@ -53,7 +58,8 @@
 (defn require [& modules]
   (log "Loading asynchronously...") ; Open the console if it never says loaded.")
   (.done
-    (ajax "/requires" {:data {:modules modules}
+    (ajax "/requires" {:data {:modules modules
+                              :__anti-forgery-token anti-forgery-token}
                        :type "post"
                        :dataType "jsonp"})
     (fn [data] (doall (map load-module data)))))
@@ -62,7 +68,8 @@
 (defn compile-str [code callback]
   (let [pr (ajax "/compiler" {:type :post
                               :data {:source code
-                                     :ns cljs.core/*ns*}
+                                     :ns cljs.core/*ns*
+                                     :__anti-forgery-token anti-forgery-token}
                               :dataType :jsonp})]
     (.done pr (fn [data] (callback {:result (.-result data)
                                     :error (.-exception data)

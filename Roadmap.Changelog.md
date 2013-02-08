@@ -1,6 +1,5 @@
 # Roadmap/Ideas/Bugs:
 
-* (!) CSRF / Security considerations: http://wingolog.org/archives/2013/02/04/knocking-on-private-back-doors-with-the-web-browser
 * (!) Load project classpath for `lein shegon` inside of a project
 * Embedding REPLs into other pages
 ** With bookmarklet!
@@ -11,7 +10,12 @@
 * (!) Figure out how to test the thing
 * Allow defmacro in REPL
 * Screencast
+* Find out why it won't reload code on `lein run`
 
 # Version Log
 
-0.1.1: `lein shegon`, `(include-cljs)`, `(run-if-not-running)`
+master:
+    anti-csrf
+
+0.1.1:
+    `lein shegon`, `(include-cljs)`, `(run-if-not-running)`
