@@ -5,15 +5,10 @@
   (:use [jayq.core :only [$]])
   (:require-macros [shegon.macros :as s]))
 
+
 ; (defn create-input []
 ;   (.on @input "change" #(h/changed-current (input-value))))
 
-(defn scroll-down [{:keys [$element]}]
-  (.scrollTop $element (.-scrollHeight (first $element))))
-
-
-(defn prompt-value []
-  (str cljs.core/*ns* "=> "))
 
 (def cm-input-params
   {:value ""
@@ -26,6 +21,53 @@
                 ; :Up #(history-move :up)
                 ; :Down #(history-move :down)
                 }})
+
+
+(defn scroll-down [{:keys [$element]}]
+  (.scrollTop $element (.-scrollHeight (first $element))))
+
+
+(defn prompt-value []
+  (str cljs.core/*ns* "=> "))
+
+
+(defn focus-only-input [{:keys [input]} cm]
+  (.on cm "focus" (fn []
+    (let [sel (.getSelection cm)]
+      (when (= sel "")
+        (js/setTimeout #(.focus input) 150))))))
+
+
+; (defn add-output [output & [user?]]
+;   (when output
+;     (.on
+;       (js/CodeMirror.
+;         #(.addClass
+;             (.insertBefore ($ %) (shegon.repl/current-prompt))
+;             (str "output" (when user? " user")))
+;           (u/js-map :value (str output)
+;                     :readOnly true))
+;       "focus" focus-only-input)
+;     (scroll-down)))
+
+
+(defn last-pos [cm]
+  (let [last-line (- (.lineCount cm) 1)]
+    (clj->js {:line last-line
+              :ch (.-length (.getLine cm last-line))})))
+
+
+(defn print! [{:keys [output]} value & [className]]
+  (let [begin (last-pos output)]
+    (.replaceRange output value begin)
+
+    (when-not (nil? className)
+      (.markText output begin (last-pos output)
+        (clj->js {:className className})))))
+
+
+(defn println! [repl value & [className]]
+  (print! repl (str value "\n") className))
 
 
 (defn make-repl* [$el]
@@ -44,14 +86,20 @@
   (let [{:keys [$element output prompt input] :as repl}
           (make-repl* $el)]
     (.focus input)
-    (.on input "change" #(scroll-down repl))))
+    (.on input "change" #(scroll-down repl))
+    (focus-only-input repl output)
+    (focus-only-input repl prompt)
+    repl))
 
 
 (js/$ (fn []
-
   (def repl (make-repl (-> ".repl" $ (nth 0))))
+  (js/console.log (clj->js repl))
+  (println! repl "o hai")
+  (println! repl "lol" :user)
+  (println! repl "lold")
 
-  (js/console.log (clj->js repl))))
+  ))
 
 
 
@@ -66,13 +114,6 @@
 
 
 
-; (defn $repl-el [] ($ "#repl"))
-;
-
-; (defn last-pos [cm]
-;   (let [last-line (- (.lineCount cm) 1)]
-;     (u/js-map :line last-line
-;               :ch (.-length (.getLine cm last-line)))))
 
 ; (defn input-value []
 ;   (.getValue @input))
@@ -83,17 +124,6 @@
 ; (defn current-prompt []
 ;   (.last ($ ".CodeMirror.prompt")))
 
-; (defn add-output [output & [user?]]
-;   (when output
-;     (.on
-;       (js/CodeMirror.
-;         #(.addClass
-;             (.insertBefore ($ %) (shegon.repl/current-prompt))
-;             (str "output" (when user? " user")))
-;           (u/js-map :value (str output)
-;                     :readOnly true))
-;       "focus" focus-only-input)
-;     (scroll-down)))
 
 ; (defn format-input [prompt input]
 ;   (let [indent (.replace prompt (js* "/./g") " ")]
@@ -105,11 +135,6 @@
 ;     (add-output (format-input (prompt-value) inp) true)
 ;     (eval-print inp)
 ;     (.setValue @input "")))
-
-; (defn focus-only-input [cm]
-;   (let [sel (.getSelection cm)]
-;     (when (= sel "")
-;       (js/setTimeout #(.focus @input) 100))))
 
 ; (defn history-move [direction]
 ;   (.setValue @input (h/move direction))
