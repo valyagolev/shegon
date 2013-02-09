@@ -10,6 +10,9 @@
          '{:result "hello.a = (hello.b + 5)", :ns hello}))
 
   (is (= (compile-js {:source "(ns change-ns)"})
-         '{:result "goog.provide('change_ns');\ngoog.require('cljs.core');\n", :ns change-ns})))
+         '{:result "goog.provide('change_ns');\ngoog.require('cljs.core');\n", :ns change-ns}))
+
+  (is (= (.getMessage (:exception (compile-js {:source "((no octocat you don't have matching parens"})))
+         "java.lang.RuntimeException: EOF while reading, starting at line 1")))
 
 

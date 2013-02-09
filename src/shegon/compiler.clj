@@ -39,6 +39,8 @@
 (defn compile-js
   "Compiles ClojureScript staments (from string) to JavaScript.
 
+  In case of exception, returns {:exception ...}, because I hate exceptions.
+
   user=> (compile-js {:source \"(+ x 5)\"})
   {:result \"(shegon.user.x + 5)\", :ns shegon.user}
 
@@ -46,7 +48,10 @@
   {:result \"hello.a = (hello.b + 5)\", :ns hello}
 
   user=> (compile-js {:source \"(ns change-ns)\"})
-  {:result \"goog.provide('change_ns');\\ngoog.require('cljs.core');\\n\", :ns change-ns}"
+  {:result \"goog.provide('change_ns');\\ngoog.require('cljs.core');\\n\", :ns change-ns}
+
+  user=> (compile-js {:source \"((no octocat you don't have matching parens\"})
+  {:exception #<ReaderException clojure.lang.LispReader$ReaderException: java.lang.RuntimeException: EOF while reading, starting at line 1>}"
   [{:keys [source ns]}]
     (let [ns (or ns 'shegon.user)]
       (try (clojure-to-js source (symbol ns))
