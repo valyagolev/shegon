@@ -12,31 +12,31 @@ body {
     font-weight: bolder;
 }
 
-#repl {
+.repl {
     border: 1px solid black;
     height: 600px;
     overflow-y: scroll;
 }
 
 
-#repl .CodeMirror {
+.repl .CodeMirror {
     border: 0;
     height: auto;
     line-height: 19px;
 }
 
-#repl .CodeMirror.user {
+.repl .CodeMirror.user {
     font-weight: bolder;
 }
 
 
-#repl .CodeMirror.input {
+.repl .CodeMirror.input {
     height: auto;
     background-color: white;
 }
-#repl .CodeMirror.prompt {
+.repl .CodeMirror.prompt {
     float: left;
-    margin-right: -30px;
+    /*margin-right: -30px;*/
 }
 .CodeMirror.prompt {
     background-color: rgb(240, 240, 240);

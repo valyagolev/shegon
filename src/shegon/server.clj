@@ -67,7 +67,10 @@
 
 
 (defroutes app-routes
-  (GET "/" [] (layout [:div#repl "Loading... May take time if you've just ran it"]))
+  (GET "/" [] (layout
+                [:div.repl "Loading... May take time if you've just ran it"]
+                ;[:div.repl "Loading... May take time if you've just ran it"]
+                ))
 
   (POST "/requires" {{:keys [callback modules]} :params}
     (jsonp-or-json (shegon.namespaces/load-modules modules) callback))
