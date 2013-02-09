@@ -99,18 +99,21 @@
       ring.middleware.params/wrap-params))
 
 
-(defn run-if-not-running []
-  (when (nil? @running-server)
-    (println "Running internal shegon CLJS server at http://127.0.0.1:19000/ ...")
-    (println "If it's the first compilation in this process, please wait...")
-    (reset! running-server
-      (ring.adapter.jetty/run-jetty server {
-        :port   19000
-        :join?  false
-      })))
-  @running-server)
-
+(defn run-if-not-running
+  ([] (run-if-not-running server))
+  ([handler]
+    (when (nil? @running-server)
+      (println "Running internal shegon CLJS server at http://127.0.0.1:19000/ ...")
+      (println "If it's the first compilation in this process, please wait...")
+      (reset! running-server
+        (ring.adapter.jetty/run-jetty handler {
+          :port   19000
+          :join?  false
+        })))
+    @running-server))
 
 (defn -main []
   (println "Joining the internal server")
-  (.join (run-if-not-running)))
+  (.join (-> server
+             ring.middleware.reload/wrap-reload
+             run-if-not-running)))

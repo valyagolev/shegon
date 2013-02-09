@@ -10,12 +10,16 @@
 * (!) Figure out how to test the thing
 * Allow defmacro in REPL
 * Screencast
-* Find out why it won't reload code on `lein run`
+* Figure out how to make it embeddable into others' web servers
+* Don't run incomplete declarations in REPL
+* Nicer emit-js, maybe even live emit-js
+* Move REPL to a separate package
 
 # Version Log
 
-master:
-    anti-csrf
+* master:
+    * reload code on `lein run`
+    * anti-csrf
 
-0.1.1:
-    `lein shegon`, `(include-cljs)`, `(run-if-not-running)`
+* 0.1.1
+    * `lein shegon`, `(include-cljs)`, `(run-if-not-running)`
