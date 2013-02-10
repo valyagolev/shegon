@@ -1,7 +1,7 @@
 (ns shegon.test.repl
   (:require [shegon.repl :as repl])
   (:use [jayq.core :only [text $ append-to]])
-  (:use-macros [shegon.test.macros :only [describe expect]]))
+  (:use-macros [shegon.test.macros :only [async-test describe expect]]))
 
 
 (describe "REPL"
@@ -26,9 +26,11 @@
     (repl/set-input repl "(+ 1 2)")
     (expect (.getValue (:input repl)) "(+ 1 2)")
 
-  :xit "can eval-print"
-    (xdo
-      (repl/eval-print repl "(+ 1 2)")
-      (except (repl/get-output repl) 3))
+  :it "can eval-print"
+    (async-test 200
+      [_ (repl/eval-print repl "(+ 1 2)")]
+      (expect (repl/get-output repl) "3\n"))
 
-  :after (.remove $el))
+  :after (.remove $el)
+
+  )

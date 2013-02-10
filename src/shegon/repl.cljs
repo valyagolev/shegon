@@ -1,7 +1,8 @@
 (ns shegon.repl
   (:require [shegon.user :as u]
-            [shegon.history :as h])
-  (:use [jayq.core :only [$]])
+            [shegon.history :as h]
+            [shegon.evaluator :as eval])
+  (:use [jayq.core :only [$ done]])
   (:require-macros [shegon.macros :as s]))
 
 
@@ -64,8 +65,9 @@
   (.setValue input value))
 
 
-(defn eval-print [value]
-  )
+(defn eval-print [repl value]
+  (done (eval/eval-cljs-deferred value)
+    #(println repl (:result %) :user)))
 
 
 (defn- make-repl* [$el]
