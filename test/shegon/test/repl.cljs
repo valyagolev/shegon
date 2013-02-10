@@ -29,13 +29,14 @@
   :it "can eval-print"
     (async-test 200
       [_ (repl/eval-print repl "(+ 1 2)")]
-      (expect (repl/get-output repl) "3\n"))
+      (expect (repl/get-output repl) "shegon.user=>  (+ 1 2)\n3\n"))
 
   :it "can read-eval-print"
     (repl/set-input repl "(+ 3 4)")
     (async-test 200
       [_ (repl/read-eval-print repl)]
-      (expect (repl/get-output repl) "7\n")
+      (expect (repl/get-output repl) "shegon.user=>  (+ 3 4)\n7\n")
       (expect (repl/get-input repl) ""))
+
 
   :after (.remove $el))

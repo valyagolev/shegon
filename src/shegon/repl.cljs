@@ -14,13 +14,16 @@
   {:value ""
    :mode "clojure"
    :matchBrackets true
-   :class "input user"
-   :extraKeys {; :Enter #(do-repl)
-                :Ctrl-Enter "newlineAndIndent"
-                :Alt-Enter "newlineAndIndent"
-                ; :Up #(history-move :up)
-                ; :Down #(history-move :down)
-                }})
+   :class "input user"})
+
+(defn input-keymap [repl]
+  (clj->js
+    {:Enter #(read-eval-print repl)
+     :Ctrl-Enter "newlineAndIndent"
+     :Alt-Enter "newlineAndIndent"
+     ; :Up #(history-move :up)
+     ; :Down #(history-move :down)
+     }))
 
 
 (defn- scroll-down [{:keys [$element]}]
@@ -70,14 +73,15 @@
 
 
 (defn eval-print [repl value]
+  (println repl (str (prompt-value) " " value) :user)
   (done (eval/eval-cljs-deferred value)
-    #(println repl (:result %) :user)))
+    #(println repl (:result %))))
 
 
 (defn read-eval-print [repl]
-  (done
-    (eval-print repl (get-input repl))
-    #(set-input repl "")))
+  (let [inp (get-input repl)]
+    (set-input repl "")
+    (eval-print repl inp)))
 
 
 (defn- make-repl* [$el]
@@ -95,6 +99,7 @@
 (defn make-repl [$el]
   (let [{:keys [$element output prompt input] :as repl}
           (make-repl* $el)]
+    (.addKeyMap input (input-keymap repl))
     (.focus input)
     (.on input "change" #(scroll-down repl))
     (focus-only-input repl output)
