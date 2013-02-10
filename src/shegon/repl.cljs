@@ -97,7 +97,6 @@
         (when old-handler (old-handler exc src line))))))
 
 
-
 (defn- make-repl* [$el]
   (s/with-codemirrors $element
     [output {:mode "clojure"       :readOnly true}
@@ -127,28 +126,12 @@
     (def repl (make-repl repl-el))
     (eval-print repl "(help)"))))
 
-
-
-
-
-
 ; (defn format-input [prompt input]
 ;   (let [indent (.replace prompt (js* "/./g") " ")]
 ;     (str prompt (.replace input (js* "/\\n/g") (+ "\n" indent)))))
 
-; (defn do-repl []
-;   (let [inp (input-value)]
-;     (h/add-input inp)
-;     (add-output (format-input (prompt-value) inp) true)
-;     (eval-print inp)
-;     (.setValue @input "")))
-
 ; (defn history-move [direction]
 ;   (.setValue @input (h/move direction))
 ;   (.setCursor @input (last-pos @input)))
-
-; (defn render-examples []
-;   (e/render-to
-;     (.empty ($right-panel))))
 
 
