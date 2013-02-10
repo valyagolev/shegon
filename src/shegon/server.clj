@@ -165,5 +165,5 @@
 (defn -main []
   (println "Joining the internal server")
   (.join (-> server
-             ring.middleware.reload/wrap-reload
+             (ring.middleware.reload/wrap-reload {:dirs ["src" "test"]})
              run-if-not-running)))

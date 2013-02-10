@@ -1,12 +1,15 @@
 (ns shegon.test.repl
-  (:require [shegon.repl]))
+  (:require [shegon.repl])
+  (:require-macros [shegon.test.macros :as t]))
 
-(js/describe "REPL" (fn[]
-  (let [$el (js/$ "<div></div>")]
-    (js/beforeEach (fn []
-      (.appendTo $el (js/$ "body"))))
-    (js/it "can be created in the element" (fn []
-      (let [repl (shegon.repl/make-repl $el)]
-        (.toBe (js/expect (:$element repl)) $el))))
-    (js/afterEach (fn []
-      (.remove $el))))))
+(t/describe "REPL again" [$el (js/$ "<div></div>")]
+  :before (.appendTo $el (js/$ "body"))
+
+  "can be created in the element"
+    (let [repl (shegon.repl/make-repl $el)]
+      (doseq [x [:input :output :prompt]]
+        (t/expect (instance? js/CodeMirror (:input repl))))
+
+      (t/expect (:$element repl) $el))
+
+  :after (.remove $el))

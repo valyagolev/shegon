@@ -7,13 +7,14 @@
 * Optimize stupid output code
 * Output embetterments: clickable code snippets and stuff
 * (!) Documentation
-* (!) Figure out how to test the thing
 * Allow defmacro in REPL
 * Screencast
 * Figure out how to make it embeddable into others' web servers
 * Don't run incomplete declarations in REPL
 * Nicer emit-js, maybe even live emit-js
 * Move REPL to a separate package
+* Blog:
+** PhantomJS Jasmine ClojureScript testing on Travis CI (that's a lot of buzzwords!)
 
 # Version Log
 
