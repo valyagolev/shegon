@@ -10,13 +10,14 @@
   "Form:
 
   (describe \"something\"
-    :let b1 (...)                 ; bound before each test
+    :let b1 (...)                     ; bound before each test
     :let b2 (...)
-    :before (...)                 ; run before each test
+    :before (...)                     ; run before each test
     :before (...)
-    \"can do some stuff\" (...)   ; test themselves
-    \"can do other stuff\" (...)
-    :after (...)                  ; run after each test
+    :it \"can do some stuff\" (...)   ; tests themselves
+    :it \"can do other stuff\" (...)
+    :xit \"can't yet do that\" (...)  ; disabling tests
+    :after (...)                      ; run after each test
     :after (...))
 
   All bindings re-run before every test, so you can safely delete them
