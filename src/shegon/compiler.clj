@@ -6,7 +6,8 @@
 (defn- clojure-to-js-emit [s ns]
   (comp/with-core-cljs
     (binding [ana/*cljs-ns* ns
-              ana/*cljs-file* "<fazil REPL>"]
+              ana/*cljs-file* "<fazil REPL>"
+              *read-eval* false]
 
       (when (nil? (ana/get-namespace ana/*cljs-ns*))
         (ana/set-namespace ana/*cljs-ns* {:name ana/*cljs-ns*}))
