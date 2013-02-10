@@ -61,18 +61,18 @@
                     "/resources/jasmine/jasmine-html.js"
                     "/resources/codemirror/codemirror.js"
                     "/resources/js/jquery-1.9.0.min.js")
-        (include-cljs "shegon.test.repl")
+        (include-cljs "shegon.test.frontend")
         [:script "
           (function() {
             var jasmineEnv = jasmine.getEnv();
             jasmineEnv.updateInterval = 1000;
 
-            var trivialReporter = new jasmine.HtmlReporter();
+            var htmlReporter = new jasmine.HtmlReporter();
 
-            jasmineEnv.addReporter(trivialReporter);
+            jasmineEnv.addReporter(htmlReporter);
 
             jasmineEnv.specFilter = function(spec) {
-              return trivialReporter.specFilter(spec);
+              return htmlReporter.specFilter(spec);
             };
 
             var currentWindowOnload = window.onload;

@@ -43,7 +43,7 @@
               :ch (.-length (.getLine cm last-line))})))
 
 
-(defn print! [{:keys [output]} value & [className]]
+(defn print [{:keys [output]} value & [className]]
   (let [begin (last-pos output)]
     (.replaceRange output value begin)
 
@@ -52,8 +52,8 @@
         (clj->js {:className className})))))
 
 
-(defn println! [repl value & [className]]
-  (print! repl (str value "\n") className))
+(defn println [repl value & [className]]
+  (print repl (str value "\n") className))
 
 
 (defn get-output [{:keys [output]}]
@@ -62,6 +62,10 @@
 
 (defn set-input [{:keys [input]} value]
   (.setValue input value))
+
+
+(defn eval-print [value]
+  )
 
 
 (defn- make-repl* [$el]
@@ -90,9 +94,9 @@
   (when-let [repl-el ($ ".repl")]
     (def repl (make-repl repl-el))
     (js/console.log (clj->js repl))
-    (println! repl "o hai")
-    (println! repl "lol" :user)
-    (println! repl "lold"))
+    (println repl "o hai")
+    (println repl "lol" :user)
+    (println repl "lold"))
 
   ))
 
