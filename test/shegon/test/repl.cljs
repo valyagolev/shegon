@@ -31,6 +31,11 @@
       [_ (repl/eval-print repl "(+ 1 2)")]
       (expect (repl/get-output repl) "3\n"))
 
-  :after (.remove $el)
+  :it "can read-eval-print"
+    (repl/set-input repl "(+ 3 4)")
+    (async-test 200
+      [_ (repl/read-eval-print repl)]
+      (expect (repl/get-output repl) "7\n")
+      (expect (repl/get-input repl) ""))
 
-  )
+  :after (.remove $el))

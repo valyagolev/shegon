@@ -65,9 +65,19 @@
   (.setValue input value))
 
 
+(defn get-input [{:keys [input]}]
+  (.getValue input))
+
+
 (defn eval-print [repl value]
   (done (eval/eval-cljs-deferred value)
     #(println repl (:result %) :user)))
+
+
+(defn read-eval-print [repl]
+  (done
+    (eval-print repl (get-input repl))
+    #(set-input repl "")))
 
 
 (defn- make-repl* [$el]
