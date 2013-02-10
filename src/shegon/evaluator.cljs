@@ -18,11 +18,11 @@
             (reject ($deferred) error)
             {:result (.-result data)
              :ns (.-ns data)}))
-        #(do %)))
+        identity))
 
 
 (defn eval-cljs-deferred [code]
   (then (compile-cljs-deferred code)
     (fn [{:keys [result] :as data}]
       (assoc data :result (js/eval result)))
-    #(do %)))
+    identity))
