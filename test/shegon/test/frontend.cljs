@@ -1,4 +1,4 @@
 (ns shegon.test.frontend
-  (:require [shegon.test.repl]
-            [shegon.test.evaluator]))
+  (:require [shegon.test.evaluator]
+            [shegon.test.repl]))
 

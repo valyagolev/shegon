@@ -113,32 +113,11 @@
 (js/$ (fn []
   (when-let [repl-el ($ ".repl")]
     (def repl (make-repl repl-el))
-    (println repl "o hai")
-    (println repl "lol" :user)
-    (println repl "lold"))))
+    (eval-print repl "(help)"))))
 
 
 
 
-
-; (defn eval-print [code]
-;   (u/eval code
-;     #(do
-;       (.setValue @prompt (prompt-value))
-;       (add-output (or (:error %) (pr-str (:result %)))))))
-
-
-
-
-
-; (defn input-value []
-;   (.getValue @input))
-
-
-
-
-; (defn current-prompt []
-;   (.last ($ ".CodeMirror.prompt")))
 
 
 ; (defn format-input [prompt input]
@@ -163,11 +142,3 @@
 ; (defn log-onerror []
 ;   (set! js/window.onerror (fn [exc src line] (u/log "Top level exception: \n  " exc " at " src ":" line))))
 
-; ($ (fn []
-;     (.html ($repl-el) "")
-
-;     (create-input)
-;     (create-prompt)
-;     (u/log "Wait for it...")
-;     (eval-print "(help)")
-;     (log-onerror)))

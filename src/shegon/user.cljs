@@ -96,32 +96,31 @@
       (callback compile_result)))))
 
 (defn help []
-  (log
-"Hey! This is Shegon ClojureScript REPL talking.
+  "  Hey! This is Shegon ClojureScript REPL talking.
 
-All the obvious clojure stuff is probably working. The history is saved even
-between sessions. Life is good. You look nice. Let's dance more!
+  All the obvious clojure stuff is probably working. The history is saved even
+  between sessions. Life is good. You look nice. Let's dance more!
 
-Try also stuff from shegon.user namespace:
-  (log \"hello\")                   ; to write stuff down in the console
+  Try also stuff from shegon.user namespace:
+    (log \"hello\")                   ; to write stuff down in the console
 
-  (emit-js \"(+ 1 1)\")             ; note that this op and the next one are
-  (compile-str \"(+ 1 1)\" log)     ; async operations. in the second
-                                  ; case you can supply a callback
+    (emit-js \"(+ 1 1)\")             ; note that this op and the next one are
+    (compile-str \"(+ 1 1)\" log)     ; async operations. in the second
+                                    ; case you can supply a callback
 
-  (ns some.ns)                    ; changes ns where you're in
-                                  ; (I hope it makes sense, didn't figure
-                                  ; Clojure namespaces completely yet)
+    (ns some.ns)                    ; changes ns where you're in
+                                    ; (I hope it makes sense, didn't figure
+                                    ; Clojure namespaces completely yet)
 
-  (require 'your.module)          ; compiles and (re-)loads your module
-                                  ; from .cljs file on your classpath
-                                  ; (note that classpath is not a
-                                  ;   :cljsbuild :builds :source-paths
-                                  ; thing but rather like clojure classpath.
-                                  ; By default it's src/)
-                                  ; very nice!
+    (require 'your.module)          ; compiles and (re-)loads your module
+                                    ; from .cljs file on your classpath
+                                    ; (note that classpath is not a
+                                    ;   :cljsbuild :builds :source-paths
+                                    ; thing but rather like clojure classpath.
+                                    ; By default it's src/)
+                                    ; very nice!
 
-This thingy is open-source: https://github.com/va1en0k/shegon"))
+  This thingy is open-source: https://github.com/va1en0k/shegon")
 
 
 (patch-provide)
