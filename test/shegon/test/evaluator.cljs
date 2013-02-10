@@ -28,4 +28,10 @@
   :it "reports exceptions from eval"
     (async-test 200
       [result (deferred-to-either (eval/eval-cljs-deferred "(undefined-function 123)"))]
-      (expect (instance? js/Error (:error result)))))
+      (expect (instance? js/Error (:error result))))
+
+  :it "evals async javascript as async"
+    (async-test 200
+      [result (eval/eval-cljs-deferred "(let [d (jayq.core/$deferred)]
+                                          (js/setTimeout #(jayq.core/resolve d 123) 100) d)")]
+      (expect (:result result) 123)))

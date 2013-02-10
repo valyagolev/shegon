@@ -6,16 +6,18 @@
   (attr ($ "#__anti-forgery-token") "value"))
 
 
-(defn return-deferred [value]
-  (resolve ($deferred) value))
-
-
 (defn fail-deferred [error]
   (reject ($deferred) error))
 
 
 (defn bind-deferred [deferred right & [left]]
   (then deferred right (or left identity)))
+
+
+; a -> Deferred a
+; Deferred a -> Deferred a
+(defn return-deferred [value]
+  (bind-deferred (resolve ($deferred) true) #(identity value)))
 
 
 (defn compile-cljs-deferred [code]
@@ -35,7 +37,6 @@
 
 (defn eval-deferred [code]
   (try
-    (js/console.log code)
     (return-deferred (js/eval code))
     (catch js/Error e (fail-deferred e))))
 
