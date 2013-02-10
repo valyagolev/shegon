@@ -67,7 +67,7 @@
             var jasmineEnv = jasmine.getEnv();
             jasmineEnv.updateInterval = 1000;
 
-            var trivialReporter = new jasmine.TrivialReporter();
+            var trivialReporter = new jasmine.HtmlReporter();
 
             jasmineEnv.addReporter(trivialReporter);
 

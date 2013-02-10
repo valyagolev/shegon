@@ -13,6 +13,7 @@
 * Don't run incomplete declarations in REPL
 * Nicer emit-js, maybe even live emit-js
 * Move REPL to a separate package
+* Move testing library to a separate package, I like it already
 * Blog:
 ** PhantomJS Jasmine ClojureScript testing on Travis CI (that's a lot of buzzwords!)
 

@@ -69,6 +69,10 @@
   (print! repl (str value "\n") className))
 
 
+(defn get-output [{:keys [output]}]
+  (.getValue output))
+
+
 (defn make-repl* [$el]
   (s/with-codemirrors $element
     [output {:mode "clojure"       :readOnly true}
