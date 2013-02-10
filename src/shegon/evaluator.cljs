@@ -1,5 +1,5 @@
 (ns shegon.evaluator
-  (:use [jayq.core :only [$ attr ajax pipe]]))
+  (:use [jayq.core :only [$ attr ajax then $deferred reject]]))
 
 
 (defn anti-forgery-token []
@@ -7,19 +7,22 @@
 
 
 (defn compile-cljs-deferred [code]
-  (pipe (ajax {:url "/compiler"
+  (then (ajax {:url "/compiler"
                :type :post
                :data {:source               code
                       :ns                   cljs.core/*ns*
                       :__anti-forgery-token (anti-forgery-token)}
                :dataType :jsonp})
         (fn [data]
-          {:result (.-result data)
-           :error (.-exception data)
-           :ns (.-ns data)})))
+          (if-let [error (.-exception data)]
+            (reject ($deferred) error)
+            {:result (.-result data)
+             :ns (.-ns data)}))
+        #(do %)))
 
 
 (defn eval-cljs-deferred [code]
-  (pipe (compile-cljs-deferred code)
+  (then (compile-cljs-deferred code)
     (fn [{:keys [result] :as data}]
-      (assoc data :result (js/eval result)))))
+      (assoc data :result (js/eval result)))
+    #(do %)))

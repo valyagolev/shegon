@@ -93,7 +93,6 @@
 (js/$ (fn []
   (when-let [repl-el ($ ".repl")]
     (def repl (make-repl repl-el))
-    (js/console.log (clj->js repl))
     (println repl "o hai")
     (println repl "lol" :user)
     (println repl "lold"))
