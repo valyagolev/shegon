@@ -2,7 +2,7 @@
   (:require [shegon.user :as u]
             [shegon.history :as h]
             [shegon.evaluator :as eval])
-  (:use [jayq.core :only [$ done]])
+  (:use [jayq.core :only [$ then]])
   (:require-macros [shegon.macros :as s]))
 
 
@@ -74,8 +74,11 @@
 
 (defn eval-print [repl value]
   (println repl (str (prompt-value) " " value) :user)
-  (done (eval/eval-cljs-deferred value)
-    #(println repl (:result %))))
+  (let [pr (eval/eval-cljs-deferred value)]
+    (then pr
+      #(println repl (:result %))
+      #(println repl (str "Error: " %)))
+    pr))
 
 
 (defn read-eval-print [repl]
@@ -112,9 +115,7 @@
     (def repl (make-repl repl-el))
     (println repl "o hai")
     (println repl "lol" :user)
-    (println repl "lold"))
-
-  ))
+    (println repl "lold"))))
 
 
 

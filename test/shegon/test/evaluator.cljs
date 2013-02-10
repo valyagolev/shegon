@@ -1,12 +1,7 @@
 (ns shegon.test.evaluator
   (:require [shegon.evaluator :as eval])
   (:use-macros [shegon.test.macros :only [describe expect async-test]])
-  (:use [jayq.core :only [$deferred then resolve]]))
-
-(defn deferred-to-either [deferred]
-  (then deferred #(hash-map :result %)
-                 #(resolve ($deferred) {:error %})))
-
+  (:use [shegon.test.utils :only [deferred-to-either]]))
 
 
 (describe "Evaluator"
@@ -34,4 +29,13 @@
     (async-test 200
       [result (eval/eval-cljs-deferred "(let [d (jayq.core/$deferred)]
                                           (js/setTimeout #(jayq.core/resolve d 123) 100) d)")]
-      (expect (:result result) 123)))
+      (expect (:result result) 123))
+
+  :it "reports errors from async javascript"
+    (async-test 200
+      [result (deferred-to-either (eval/eval-cljs-deferred
+                                    "(let [d (jayq.core/$deferred)]
+                                      (js/setTimeout #(jayq.core/reject d \"error error\") 100) d)"))]
+      (expect (:error result) "error error"))
+
+    )
