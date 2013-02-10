@@ -1,19 +1,25 @@
 # Roadmap/Ideas/Bugs:
 
 * (!) Load project classpath for `lein shegon` inside of a project
-* Embedding REPLs into other pages
-** With bookmarklet!
-* Run shegon somewhere on the internet
-* Optimize stupid output code
+* Figure out how to make it embeddable into others' web servers
 * Output embetterments: clickable code snippets and stuff
 * (!) Documentation
-* Allow defmacro in REPL
 * Screencast
-* Figure out how to make it embeddable into others' web servers
-* Don't run incomplete declarations in REPL
-* Nicer emit-js, maybe even live emit-js
-* Move REPL to a separate package
-* Move testing library to a separate package, I like it already
+
+* Repl:
+** Run REPL somewhere on the internet
+** Move REPL to a separate package
+** Allow defmacro in REPL
+** Nicer emit-js, maybe even live emit-js
+** Don't run incomplete declarations in REPL
+** Embedding REPLs into other pages
+*** With bookmarklet!
+
+* Tests:
+** Move testing library to a separate package, I like it already
+** Show lines of code or something, because `TypeError: Cannot call method 'call' of undefined`
+   drives me crazy
+
 * Blog:
 ** PhantomJS Jasmine ClojureScript testing on Travis CI (that's a lot of buzzwords!)
 
