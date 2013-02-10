@@ -13,7 +13,7 @@
   :it "can compile clojurescript"
     (async-test 200
       [result (eval/compile-cljs-deferred "(+ 1 2)")]
-      (expect (:result result) "(1 + 2)"))
+      (expect (:js-code result) "(1 + 2)"))
 
   :it "reports errors on wrong clojurescript"
     (async-test 200
