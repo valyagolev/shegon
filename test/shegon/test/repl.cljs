@@ -7,8 +7,8 @@
 
   "can be created in the element"
     (let [repl (shegon.repl/make-repl $el)]
-      (doseq [x [:input :output :prompt]]
-        (expect (instance? js/CodeMirror (:input repl))))
+      (doseq [param [:input :output :prompt]]
+        (expect (instance? js/CodeMirror (param repl))))
 
       (expect (:$element repl) $el))
 
