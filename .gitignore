@@ -8,4 +8,5 @@ pom.xml.asc
 .cake
 /target/
 .lein-repl-history
+.lein-failures
 /resources/public/_compiled/

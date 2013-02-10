@@ -7,6 +7,8 @@ returns a series of `<script>` tags to use, and a REPL right in your browser,
 which is able to reload code from your modules on the fly, without reloading
 a page.
 
+[![Build Status](https://travis-ci.org/va1en0k/shegon.png?branch=master)](https://travis-ci.org/va1en0k/shegon)
+
 ## Serving ClojureScript
 
 This is pretty straight-forward:
