@@ -31,7 +31,7 @@
         wrap-let (fn [body] `(fn [] (let ~let-bindings ~body)))]
     `(js/describe ~what
       (fn []
-        (let ~(vec (apply concat (for [an atom-names] `(~an (atom)))))
+        (let ~(vec (apply concat (for [an atom-names] `(~an (atom nil)))))
           ~@(for [[clause body] clauses]
               (case clause
                 :before `(js/beforeEach ~(wrap-let body))
