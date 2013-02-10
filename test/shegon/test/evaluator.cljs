@@ -23,4 +23,9 @@
   :it "can eval clojurescript"
     (async-test 200
       [result (eval/eval-cljs-deferred "(+ 1 2)")]
-      (expect (:result result) 3)))
+      (expect (:result result) 3))
+
+  :it "reports exceptions from eval"
+    (async-test 200
+      [result (deferred-to-either (eval/eval-cljs-deferred "(undefined-function 123)"))]
+      (expect (instance? js/Error (:error result)))))
