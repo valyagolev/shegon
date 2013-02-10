@@ -2,7 +2,8 @@ language: clojure
 lein: lein2
 before_script:
     - "lein run &"
-    - "sleep 20"
+    - "sleep 40"
 script:
-    - "phantomjs resources/public/jasmine/phantom-jasmine.js http://127.0.0.1:19000/tests"
     - "lein test"
+    - "phantomjs resources/public/jasmine/phantom-jasmine.js http://127.0.0.1:19000/tests"
+
