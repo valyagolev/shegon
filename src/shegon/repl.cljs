@@ -1,7 +1,6 @@
 (ns shegon.repl
   (:require [shegon.user :as u]
-            [shegon.history :as h]
-            [dommy.template :as template])
+            [shegon.history :as h])
   (:use [jayq.core :only [$]])
   (:require-macros [shegon.macros :as s]))
 
@@ -93,11 +92,12 @@
 
 
 (js/$ (fn []
-  (def repl (make-repl (-> ".repl" $ (nth 0))))
-  (js/console.log (clj->js repl))
-  (println! repl "o hai")
-  (println! repl "lol" :user)
-  (println! repl "lold")
+  (when-let [repl-el ($ ".repl")]
+    (def repl (make-repl repl-el))
+    (js/console.log (clj->js repl))
+    (println! repl "o hai")
+    (println! repl "lol" :user)
+    (println! repl "lold"))
 
   ))
 

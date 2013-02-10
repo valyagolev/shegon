@@ -20,6 +20,9 @@
         [compojure.core]))
 
 
+(println "Code reloaded...")
+
+
 (defonce running-server (atom nil))
 (declare run-if-not-running)
 
@@ -49,6 +52,48 @@
      (ring.util.anti-forgery/anti-forgery-field)
      [:div#wrapper
       content]]))
+
+(defn test-page []
+  (html5
+      [:head
+        (include-css "/resources/jasmine/jasmine.css")
+        (include-js "/resources/jasmine/jasmine.js"
+                    "/resources/jasmine/jasmine-html.js"
+                    "/resources/codemirror/codemirror.js"
+                    "/resources/js/jquery-1.9.0.min.js")
+        (include-cljs "shegon.test.repl")
+        [:script "
+          (function() {
+            var jasmineEnv = jasmine.getEnv();
+            jasmineEnv.updateInterval = 1000;
+
+            var trivialReporter = new jasmine.TrivialReporter();
+
+            jasmineEnv.addReporter(trivialReporter);
+
+            jasmineEnv.specFilter = function(spec) {
+              return trivialReporter.specFilter(spec);
+            };
+
+            var currentWindowOnload = window.onload;
+
+            window.onload = function() {
+              if (currentWindowOnload) {
+                currentWindowOnload();
+              }
+              execJasmine();
+            };
+
+            function execJasmine() {
+              jasmineEnv.execute();
+            }
+
+          })();"]
+      ]
+      [:body ""]
+
+
+    ))
 
 
 (defn map-key [m k f]
@@ -91,7 +136,9 @@
     :root @shegon.namespaces/public-output-path
   })
 
-  (route/resources "/resources/"))
+  (route/resources "/resources/")
+
+  (GET "/tests" [] (test-page)))
 
 
 (def server
