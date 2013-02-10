@@ -5,7 +5,7 @@
                            [org.clojure/data.json "0.2.1"]
                            [leiningen-core "2.0.0"]
 
-                           [ring/ring-jetty-adapter "1.1.8"]
+                           [ring "1.1.8"]
                            [compojure "1.1.5"]
 
                            [clj-stacktrace "0.2.5"]
