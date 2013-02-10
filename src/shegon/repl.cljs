@@ -22,7 +22,7 @@
                 }})
 
 
-(defn scroll-down [{:keys [$element]}]
+(defn- scroll-down [{:keys [$element]}]
   (.scrollTop $element (.-scrollHeight (first $element))))
 
 
@@ -30,27 +30,14 @@
   (str cljs.core/*ns* "=> "))
 
 
-(defn focus-only-input [{:keys [input]} cm]
+(defn- focus-only-input [{:keys [input]} cm]
   (.on cm "focus" (fn []
     (let [sel (.getSelection cm)]
       (when (= sel "")
         (js/setTimeout #(.focus input) 150))))))
 
 
-; (defn add-output [output & [user?]]
-;   (when output
-;     (.on
-;       (js/CodeMirror.
-;         #(.addClass
-;             (.insertBefore ($ %) (shegon.repl/current-prompt))
-;             (str "output" (when user? " user")))
-;           (u/js-map :value (str output)
-;                     :readOnly true))
-;       "focus" focus-only-input)
-;     (scroll-down)))
-
-
-(defn last-pos [cm]
+(defn- last-pos [cm]
   (let [last-line (- (.lineCount cm) 1)]
     (clj->js {:line last-line
               :ch (.-length (.getLine cm last-line))})))
@@ -73,7 +60,11 @@
   (.getValue output))
 
 
-(defn make-repl* [$el]
+(defn set-input [{:keys [input]} value]
+  (.setValue input value))
+
+
+(defn- make-repl* [$el]
   (s/with-codemirrors $element
     [output {:mode "clojure"       :readOnly true}
      prompt {:value (prompt-value) :readOnly true :class "prompt user"}

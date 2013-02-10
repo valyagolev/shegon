@@ -13,14 +13,25 @@
 
       (expect (:$element repl) $el))
 
-  "can be printed to"
-    (let [repl (repl/make-repl $el)]
+  :after (.remove $el))
 
+
+(describe "REPL" [$el (append-to ($ "<div></div>") ($ "body"))
+                  repl (repl/make-repl $el)]
+
+  "can be printed to"
+    (do
       (repl/println! repl "Hello guys")
       (expect (repl/get-output repl) "Hello guys\n")
 
       (repl/println! repl "Hello classy guys" :classy)
-      (expect (text ($ ".classy")) "Hello classy guys"))
+      (expect (text ($ ".classy")) "Hello classy guys")
+      )
+
+  "can be used to set input"
+    (do
+      (repl/set-input repl "(+ 1 2)")
+      (expect (.getValue (:input repl)) "(+ 1 2)"))
 
   :after (.remove $el))
 
