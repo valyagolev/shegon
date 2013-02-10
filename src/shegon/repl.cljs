@@ -87,6 +87,17 @@
     (eval-print repl inp)))
 
 
+(defn add-onerror-logger [repl]
+  (let [old-handler (.-onerror js/window)]
+    (set! (.-onerror js/window)
+      (fn [exc src line]
+        (println repl
+          (str "Top level exception:\n  " exc " at " src ":" line)
+          :error)
+        (when old-handler (old-handler exc src line))))))
+
+
+
 (defn- make-repl* [$el]
   (s/with-codemirrors $element
     [output {:mode "clojure"       :readOnly true}
@@ -107,6 +118,7 @@
     (.on input "change" #(scroll-down repl))
     (focus-only-input repl output)
     (focus-only-input repl prompt)
+    (add-onerror-logger repl)
     repl))
 
 
@@ -139,6 +151,4 @@
 ;   (e/render-to
 ;     (.empty ($right-panel))))
 
-; (defn log-onerror []
-;   (set! js/window.onerror (fn [exc src line] (u/log "Top level exception: \n  " exc " at " src ":" line))))
 

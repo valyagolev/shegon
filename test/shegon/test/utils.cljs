@@ -6,3 +6,8 @@
   (then deferred #(hash-map :result %)
                  #(resolve ($deferred) {:error %})))
 
+
+(defn timeout-deferred [ms]
+  (let [d ($deferred)]
+    (js/setTimeout #(resolve d) ms)
+    d))

@@ -1,7 +1,7 @@
 (ns shegon.test.repl
   (:require [shegon.repl :as repl])
   (:use [jayq.core :only [text $ append-to]]
-        [shegon.test.utils :only [deferred-to-either]])
+        [shegon.test.utils :only [deferred-to-either timeout-deferred]])
   (:use-macros [shegon.test.macros :only [async-test describe expect]]))
 
 
@@ -60,6 +60,12 @@
       (expect (last-line (repl/get-output repl)) "Error: 666")
       (expect (repl/get-input repl) ""))
 
+  :it "tells you about top-level exceptions"
+    (js/setTimeout (fn [] (invalid-function 123)) 50)
+    (async-test 200
+      [_ (timeout-deferred 60)]
+      (expect (first (.split (repl/get-output repl) "\n"))
+              "Top level exception:"))
 
   :after (.remove $el)
   )
