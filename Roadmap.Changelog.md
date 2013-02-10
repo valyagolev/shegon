@@ -19,6 +19,7 @@
 ** Move testing library to a separate package, I like it already
 ** Show lines of code or something, because `TypeError: Cannot call method 'call' of undefined`
    drives me crazy
+** Make async-test much-much better
 
 * Blog:
 ** PhantomJS Jasmine ClojureScript testing on Travis CI (that's a lot of buzzwords!)
