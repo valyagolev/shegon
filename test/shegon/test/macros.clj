@@ -1,4 +1,5 @@
-(ns shegon.test.macros)
+(ns shegon.test.macros
+  (:require [jayq.macros]))
 
 
 (defn convec [colls]
@@ -49,3 +50,26 @@
 (defmacro expect
   ([what] `(expect ~what true))
   ([what tobe] `(.toBe (js/expect ~what) ~tobe)))
+
+
+(defmacro async-test
+  "Form:
+  (async 200
+    [a (some-deferred...)
+     b (ajax-or-something...)]
+    (expect a 3)
+    (expect b 4))"
+  [ms bindings & body]
+  (let [bindings-with-atoms (for [[n v] (partition 2 bindings)] [n (gensym n) v])
+        atom-bindings (convec (for [[_ an _] bindings-with-atoms] `(~an (atom nil))))
+        done (gensym "done")
+        let-bindings (convec (for [[n an _] bindings-with-atoms]
+                                          `(~n @~an)))]
+
+    `(let ~(into atom-bindings `[~done (atom false)])
+      (js/runs (fn []
+        (jayq.macros/let-deferred ~bindings
+          ~@(for [[n an _] bindings-with-atoms] `(reset! ~an ~n))
+          (reset! ~done true))))
+      (js/waitsFor (fn [] @~done) "The deffereds should resolve" ~ms)
+      (js/runs (fn [] (let ~let-bindings ~@body))))))

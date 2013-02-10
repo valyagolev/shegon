@@ -90,7 +90,7 @@
 
           })();"]
       ]
-      [:body ""]
+      [:body (ring.util.anti-forgery/anti-forgery-field)]
 
 
     ))
