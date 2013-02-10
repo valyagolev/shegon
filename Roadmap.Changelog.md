@@ -20,6 +20,7 @@
 * master:
     * reload code on `lein run`
     * anti-csrf
+    * some tests and Travis integration
 
 * 0.1.1
     * `lein shegon`, `(include-cljs)`, `(run-if-not-running)`
